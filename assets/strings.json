@@ -1,0 +1,17 @@
+{
+  "addPerson": {
+    "en": "You haven't added anyone to Splitty.\nAdd a person to get started!"
+  },
+  "appName": {
+    "en": "Splitty"
+  },
+  "existingSplits": {
+    "en": "Existing Splits"
+  },
+  "newSplit": {
+    "en": "New Split"
+  },
+  "people": {
+    "en": "People"
+  }
+}
