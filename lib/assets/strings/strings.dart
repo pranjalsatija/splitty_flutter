@@ -29,11 +29,21 @@ class Strings {
   }
 
   // Accessors
-  String get addPerson => string('addPerson');
+  String get addPersonMessage => string('addPersonMessage');
+
+  String get addPersonPrompt => string('addPersonPrompt');
   String get appName => string('appName');
+
+  String deletedPerson(String name) => interpolated('deletedPerson', [name]);
+
+  String get done => string('done');
   String get existingSplits => string('existingSplits');
   String get newSplit => string('newSplit');
   String get people => string('people');
+
+  String get personName => string('personName');
+
+  String get undo => string('undo');
 }
 
 class _StringStorage {

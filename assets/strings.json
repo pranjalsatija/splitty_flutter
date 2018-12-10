@@ -1,9 +1,18 @@
 {
-  "addPerson": {
+  "addPersonMessage": {
     "en": "You haven't added anyone to Splitty.\nAdd a person to get started!"
+  },
+  "addPersonPrompt": {
+    "en": "Add Person"
   },
   "appName": {
     "en": "Splitty"
+  },
+  "deletedPerson": {
+    "en": "Deleted %s."
+  },
+  "done": {
+    "en": "Done"
   },
   "existingSplits": {
     "en": "Existing Splits"
@@ -13,5 +22,11 @@
   },
   "people": {
     "en": "People"
+  },
+  "personName": {
+    "en": "Person's Name"
+  },
+  "undo": {
+    "en": "Undo"
   }
 }

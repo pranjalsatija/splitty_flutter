@@ -14,7 +14,7 @@ class Splitty extends StatelessWidget {
       ],
       onGenerateTitle: (context) => Strings.of(context).appName,
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primarySwatch: Colors.blue,
       ),
       home: MainTabScreen(),
     );
