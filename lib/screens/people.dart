@@ -34,9 +34,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
       } catch (e) {
         final snackbar = SnackBar(
           content: Text(e.toString()),
-          backgroundColor: Theme
-              .of(context)
-              .errorColor,
+          backgroundColor: Theme.of(context).errorColor,
         );
 
         Scaffold.of(context).showSnackBar(snackbar);
@@ -51,16 +49,12 @@ class _PeopleScreenState extends State<PeopleScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(Strings
-              .of(context)
-              .addPersonPrompt),
+          title: Text(Strings.of(context).addPersonPrompt),
           content: TextField(
             autofocus: true,
             decoration: InputDecoration(
               isDense: true,
-              labelText: Strings
-                  .of(context)
-                  .personName,
+              labelText: Strings.of(context).personName,
             ),
             onChanged: (value) => textFieldContents = value,
             onSubmitted: (_) => Navigator.pop(context, textFieldContents),
@@ -69,9 +63,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
           actions: <Widget>[
             FlatButton(
               onPressed: () => Navigator.pop(context, textFieldContents),
-              child: Text(Strings
-                  .of(context)
-                  .done),
+              child: Text(Strings.of(context).done),
             ),
           ],
         );
@@ -83,9 +75,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
     final snackbar = SnackBar(
       content: Text(Strings.of(context).deletedPerson(person.name)),
       action: SnackBarAction(
-        label: Strings
-            .of(context)
-            .undo,
+        label: Strings.of(context).undo,
         onPressed: () async {
           await PersonController.create(person.name);
           setState(() {
@@ -117,19 +107,13 @@ class _PeopleScreenState extends State<PeopleScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            Strings
-                .of(context)
-                .addPersonMessage,
+            Strings.of(context).addPersonMessage,
             textAlign: TextAlign.center,
           ),
           RaisedButton(
-            color: Theme
-                .of(context)
-                .primaryColor,
+            color: Theme.of(context).primaryColor,
             textColor: Colors.white,
-            child: Text(Strings
-                .of(context)
-                .addPersonPrompt),
+            child: Text(Strings.of(context).addPersonPrompt),
             onPressed: _addPerson,
           )
         ],
@@ -156,16 +140,14 @@ class _PeopleScreenState extends State<PeopleScreen> {
       itemCount: people.length,
       itemBuilder: (context, index) {
         return ListTile(
-            title: Text(people[index].name),
-            trailing: IconButton(
-              icon: Icon(
-                Icons.delete,
-                color: Theme
-                    .of(context)
-                    .errorColor,
-              ),
-              onPressed: () => deletePerson(index),
-            )
+          title: Text(people[index].name),
+          trailing: IconButton(
+            icon: Icon(
+              Icons.delete,
+              color: Theme.of(context).errorColor,
+            ),
+            onPressed: () => deletePerson(index),
+          )
         );
       },
       separatorBuilder: (context, index) => Divider(height: 1.0),
@@ -188,9 +170,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
 
             case ConnectionState.done:
             default:
-              return snapshot.hasData
-                  ? _buildPeopleList(snapshot.data)
-                  : _buildEmptyState();
+              return snapshot.hasData ? _buildPeopleList(snapshot.data) : _buildEmptyState();
           }
         },
       ),

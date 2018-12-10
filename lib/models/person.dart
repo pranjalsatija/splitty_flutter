@@ -13,10 +13,9 @@ class Person {
     name = json['name'];
   }
 
-  Map toJSON() =>
-      {
-        'name': name,
-      };
+  Map toJSON() => {
+    'name': name,
+  };
 }
 
 class PersonController {
@@ -49,6 +48,7 @@ class PersonController {
     final existingPeople = await allPeople();
     if (existingPeople.indexWhere((p) => p.name == name) != -1) {
       throw new ArgumentError('A person named $name already exists.');
+
     }
 
     existingPeople.add(Person(name));
