@@ -37,8 +37,10 @@ class PersonController {
     String peopleString = await storage.readAsString();
 
     try {
-      List people = json.decode(peopleString);
-      return people.map((p) => Person.fromJSON(p)).toList();
+      List peopleMaps = json.decode(peopleString);
+      List people = peopleMaps.map((p) => Person.fromJSON(p)).toList();
+      people.sort((a, b) => a.name.compareTo(b.name));
+      return people;
     } catch (e) {
       return List();
     }

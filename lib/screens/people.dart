@@ -140,6 +140,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
       itemCount: people.length,
       itemBuilder: (context, index) {
         return ListTile(
+          contentPadding: EdgeInsets.only(left: 32, right: 16),
           title: Text(people[index].name),
           trailing: IconButton(
             icon: Icon(
