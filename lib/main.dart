@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:splitty/assets/strings.dart';
 
-import './assets/strings/strings.dart';
 import './screens/main_tab.dart';
 
 void main() => runApp(Splitty());

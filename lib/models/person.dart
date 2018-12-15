@@ -40,9 +40,9 @@ class PersonController {
       List peopleMaps = json.decode(peopleString);
       List people = peopleMaps.map((p) => Person.fromJSON(p)).toList();
       people.sort((a, b) => a.name.compareTo(b.name));
-      return people;
+      return people.length > 0 ? people : null;
     } catch (e) {
-      return List();
+      return null;
     }
   }
 

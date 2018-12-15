@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:splitty/assets/strings/strings.dart';
+import 'package:splitty/assets/strings.dart';
 import 'package:splitty/models/person.dart';
 import 'package:splitty/screens/main_tab.dart';
+import 'package:splitty/widgets/list_view_empty_state.dart';
 
 class PeopleScreen extends StatefulWidget implements BottomNavigationBarScreen {
   BottomNavigationBarItem bottomNavigationBarItem(BuildContext context) {
@@ -40,6 +41,15 @@ class _PeopleScreenState extends State<PeopleScreen> {
         Scaffold.of(context).showSnackBar(snackbar);
       }
     }
+  }
+
+  void _deletePerson(Person person) async {
+    await PersonController.delete(person);
+    _showUndoDeleteSnackbar(person);
+
+    setState(() {
+      _peopleFuture = PersonController.allPeople();
+    });
   }
 
   Future<String> _promptUserForName() {
@@ -88,70 +98,17 @@ class _PeopleScreenState extends State<PeopleScreen> {
     Scaffold.of(context).showSnackBar(snackbar);
   }
 
-  Widget _buildAddButton() {
-    return FloatingActionButton(
-      child: Icon(Icons.person_add),
-      onPressed: () => _addPerson(),
-    );
-  }
-
-  Widget _buildCircularProgressIndicator() {
-    return Center(
-      child: CircularProgressIndicator(),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            Strings.of(context).addPersonMessage,
-            textAlign: TextAlign.center,
-          ),
-          RaisedButton(
-            color: Theme.of(context).primaryColor,
-            textColor: Colors.white,
-            child: Text(Strings.of(context).addPersonPrompt),
-            onPressed: _addPerson,
-          )
-        ],
+  Widget _buildPersonListTile(Person person) {
+    return ListTile(
+      contentPadding: EdgeInsets.only(left: 16, right: 0),
+      title: Text(person.name),
+      trailing: IconButton(
+        icon: Icon(
+          Icons.delete,
+          color: Theme.of(context).errorColor,
+        ),
+        onPressed: () => _deletePerson(person),
       ),
-    );
-  }
-
-  Widget _buildPeopleList(List<Person> people) {
-    if (people.isEmpty) {
-      return _buildEmptyState();
-    }
-
-    final deletePerson = (int index) async {
-      Person personToDelete = people[index];
-      await PersonController.delete(personToDelete);
-      _showUndoDeleteSnackbar(personToDelete);
-
-      setState(() {
-        _peopleFuture = PersonController.allPeople();
-      });
-    };
-
-    return ListView.separated(
-      itemCount: people.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          contentPadding: EdgeInsets.only(left: 16, right: 0),
-          title: Text(people[index].name),
-          trailing: IconButton(
-            icon: Icon(
-              Icons.delete,
-              color: Theme.of(context).errorColor,
-            ),
-            onPressed: () => deletePerson(index),
-          )
-        );
-      },
-      separatorBuilder: (context, index) => Divider(height: 1.0),
     );
   }
 
@@ -167,16 +124,33 @@ class _PeopleScreenState extends State<PeopleScreen> {
           switch (snapshot.connectionState) {
             case ConnectionState.active:
             case ConnectionState.waiting:
-              return _buildCircularProgressIndicator();
+              return Center(
+                child: CircularProgressIndicator(),
+              );
 
             case ConnectionState.done:
             default:
-              return snapshot.hasData ? _buildPeopleList(snapshot.data) : _buildEmptyState();
+              if (snapshot.hasData) {
+                List<Person> people = snapshot.data;
+                return ListView.separated(
+                  itemCount: people.length,
+                  itemBuilder: (context, index) => _buildPersonListTile(people[index]),
+                  separatorBuilder: (context, index) => Divider(height: 1.0),
+                );
+              } else {
+                return ListViewEmptyState(
+                  actionText: Strings.of(context).addPersonPrompt,
+                  message: Strings.of(context).addPersonMessage,
+                  onPressed: () => _addPerson(),
+                );
+              }
           }
         },
       ),
-      floatingActionButton: _buildAddButton(),
-      resizeToAvoidBottomPadding: false,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.person_add),
+        onPressed: () => _addPerson(),
+      ),
     );
   }
 }

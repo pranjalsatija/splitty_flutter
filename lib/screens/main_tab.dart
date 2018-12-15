@@ -36,6 +36,7 @@ class _MainTabScreenState extends State<MainTabScreen> {
         items: _tabs.map((s) => s.bottomNavigationBarItem(context)).toList(),
       ),
       body: _tabs[_selectedIndex],
+      resizeToAvoidBottomPadding: false,
     );
   }
 }
