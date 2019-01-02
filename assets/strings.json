@@ -23,6 +23,18 @@
   "existingSplits": {
     "en": "Existing Splits"
   },
+  "itemInfo": {
+    "en": "Item Info"
+  },
+  "itemName": {
+    "en": "Item Name"
+  },
+  "itemPrice": {
+    "en": "Item Price"
+  },
+  "newItem": {
+    "en": "New Item"
+  },
   "newSplit": {
     "en": "New Split"
   },

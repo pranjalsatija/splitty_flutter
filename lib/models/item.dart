@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:splitty/models/person.dart';
 
 class Item {
@@ -22,4 +23,25 @@ class Item {
     'price': this.price,
     'people': this.people.map((p) => p.toJSON()).toList(),
   };
+}
+
+class ItemPriceInputFormatter {
+  static String get currencySymbol => NumberFormat.simpleCurrency().currencySymbol;
+
+  static reformat(String text) {
+    final formatter = NumberFormat.currency(symbol: '');
+    double parsedInput;
+
+    try {
+      parsedInput = NumberFormat.simpleCurrency().parse(text);
+    } catch (error) {
+      parsedInput = double.tryParse(text);
+    }
+
+    if (parsedInput != null) {
+      return formatter.format(parsedInput);
+    } else {
+      return text;
+    }
+  }
 }

@@ -5,8 +5,10 @@ import 'package:splitty/models/split.dart';
 import 'package:splitty/widgets/_index.dart';
 
 import 'main_tab.dart';
+import 'new_item.dart';
 
-class NewSplitScreen extends StatefulWidget implements BottomNavigationBarScreen {
+class NewSplitScreen extends StatefulWidget
+    implements BottomNavigationBarScreen {
   BottomNavigationBarItem bottomNavigationBarItem(BuildContext context) {
     return BottomNavigationBarItem(
       icon: Icon(Icons.add),
@@ -27,8 +29,9 @@ class _NewSplitScreenState extends State<NewSplitScreen> {
   }
 
   void _addItem() async {
-    print('Implement me!');
-    // TODO: Implement
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => NewItemScreen()),
+    );
   }
 
   Widget _buildItemListTile(Item item) {
@@ -63,7 +66,8 @@ class _NewSplitScreenState extends State<NewSplitScreen> {
           } else {
             return ListView.separated(
               itemCount: currentSplit.items.length,
-              itemBuilder: (context, index) => _buildItemListTile(currentSplit.items[index]),
+              itemBuilder: (context, index) =>
+                  _buildItemListTile(currentSplit.items[index]),
               separatorBuilder: (context, index) => Divider(height: 1.0),
             );
           }
