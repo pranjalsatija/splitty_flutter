@@ -19,7 +19,7 @@ class Person {
 }
 
 class PersonController {
-  static Future<File> get _storage async {
+  static Future<File> _storage() async {
     final directory = await getApplicationDocumentsDirectory();
     final file = File(path.join(directory.path, 'people.json'));
     final exists = await file.exists();
@@ -33,16 +33,16 @@ class PersonController {
 
 
   static Future<List<Person>> allPeople() async {
-    final storage = await _storage;
+    final storage = await _storage();
     String peopleString = await storage.readAsString();
 
     try {
       List peopleMaps = json.decode(peopleString);
       List people = peopleMaps.map((p) => Person.fromJSON(p)).toList();
       people.sort((a, b) => a.name.compareTo(b.name));
-      return people.length > 0 ? people : null;
+      return people;
     } catch (e) {
-      return null;
+      return List();
     }
   }
 
@@ -57,7 +57,7 @@ class PersonController {
     final newPeopleMaps = existingPeople.map((p) => p.toJSON()).toList();
     final newPeopleJSON = json.encode(newPeopleMaps);
 
-    final storage = await _storage;
+    final storage = await _storage();
     await storage.writeAsString(newPeopleJSON);
   }
 
@@ -68,7 +68,7 @@ class PersonController {
     final newPeopleMaps = existingPeople.map((p) => p.toJSON()).toList();
     final newPeopleJSON = json.encode(newPeopleMaps);
 
-    final storage = await _storage;
+    final storage = await _storage();
     await storage.writeAsString(newPeopleJSON);
   }
 }

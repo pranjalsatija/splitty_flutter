@@ -29,6 +29,8 @@ class Strings {
   }
 
   // Accessors
+  String get addItemMessage => string('addItemMessage');
+  String get addItemPrompt => string('addItemPrompt');
   String get addPersonMessage => string('addPersonMessage');
   String get addPersonPrompt => string('addPersonPrompt');
   String get appName => string('appName');

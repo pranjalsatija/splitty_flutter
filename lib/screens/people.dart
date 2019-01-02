@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:splitty/assets/strings.dart';
 import 'package:splitty/models/person.dart';
 import 'package:splitty/screens/main_tab.dart';
-import 'package:splitty/widgets/list_view_empty_state.dart';
+import 'package:splitty/widgets/_index.dart';
 
 class PeopleScreen extends StatefulWidget implements BottomNavigationBarScreen {
   BottomNavigationBarItem bottomNavigationBarItem(BuildContext context) {
@@ -19,6 +19,9 @@ class PeopleScreen extends StatefulWidget implements BottomNavigationBarScreen {
 class _PeopleScreenState extends State<PeopleScreen> {
   Future<List<Person>> _peopleFuture;
 
+  /// Used with CachingFutureBuilder.
+  List<Person> _people;
+
   _PeopleScreenState() {
     _peopleFuture = PersonController.allPeople();
   }
@@ -33,12 +36,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
           _peopleFuture = PersonController.allPeople();
         });
       } catch (e) {
-        final snackbar = SnackBar(
-          content: Text(e.toString()),
-          backgroundColor: Theme.of(context).errorColor,
-        );
-
-        Scaffold.of(context).showSnackBar(snackbar);
+        _showErrorSnackbar(e);
       }
     }
   }
@@ -81,6 +79,16 @@ class _PeopleScreenState extends State<PeopleScreen> {
     );
   }
 
+  void _showErrorSnackbar(Object error) {
+    final snackbar = SnackBar(
+      content: Text(error.toString()),
+      backgroundColor: Theme.of(context).errorColor,
+    );
+
+    Scaffold.of(context).hideCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(snackbar);
+  }
+
   void _showUndoDeleteSnackbar(Person person) {
     final snackbar = SnackBar(
       content: Text(Strings.of(context).deletedPerson(person.name)),
@@ -118,32 +126,32 @@ class _PeopleScreenState extends State<PeopleScreen> {
       appBar: AppBar(
         title: Text(Strings.of(context).people),
       ),
-      body: FutureBuilder(
+      body: CachingFutureBuilder<List<Person>>(
         future: _peopleFuture,
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.active:
-            case ConnectionState.waiting:
-              return Center(
-                child: CircularProgressIndicator(),
-              );
+        cachedData: _people,
+        cacheSaver: (people) => _people = people,
+        loadingWidgetBuilder: (context) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+        finishedWidgetBuilder: (context, people, error) {
+          if (error != null) {
+            _showErrorSnackbar(error);
+          }
 
-            case ConnectionState.done:
-            default:
-              if (snapshot.hasData) {
-                List<Person> people = snapshot.data;
-                return ListView.separated(
-                  itemCount: people.length,
-                  itemBuilder: (context, index) => _buildPersonListTile(people[index]),
-                  separatorBuilder: (context, index) => Divider(height: 1.0),
-                );
-              } else {
-                return ListViewEmptyState(
-                  actionText: Strings.of(context).addPersonPrompt,
-                  message: Strings.of(context).addPersonMessage,
-                  onPressed: () => _addPerson(),
-                );
-              }
+          if (people == null || people.isEmpty) {
+            return ListViewEmptyState(
+              actionText: Strings.of(context).addPersonPrompt,
+              message: Strings.of(context).addPersonMessage,
+              onPressed: () => _addPerson(),
+            );
+          } else {
+            return ListView.separated(
+              itemCount: people.length,
+              itemBuilder: (context, index) => _buildPersonListTile(people[index]),
+              separatorBuilder: (context, index) => Divider(height: 1.0),
+            );
           }
         },
       ),

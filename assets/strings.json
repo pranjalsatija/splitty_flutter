@@ -1,4 +1,10 @@
 {
+  "addItemMessage": {
+    "en": "You haven't added any items to this split.\nAdd an item to get started!"
+  },
+  "addItemPrompt": {
+    "en": "Add Item"
+  },
   "addPersonMessage": {
     "en": "You haven't added anyone to Splitty.\nAdd a person to get started!"
   },
