@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:splitty/assets/strings.dart';
-import 'package:splitty/models/person.dart';
+import 'package:splitty/models/_index.dart';
 import 'package:splitty/screens/main_tab.dart';
+import 'package:splitty/utilities/_index.dart';
 import 'package:splitty/widgets/_index.dart';
 
 class PeopleScreen extends StatefulWidget implements BottomNavigationBarScreen {
@@ -36,7 +37,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
           _peopleFuture = PersonController.allPeople();
         });
       } catch (e) {
-        _showErrorSnackbar(e);
+        showErrorSnackbar(context, e);
       }
     }
   }
@@ -77,16 +78,6 @@ class _PeopleScreenState extends State<PeopleScreen> {
         );
       },
     );
-  }
-
-  void _showErrorSnackbar(Object error) {
-    final snackbar = SnackBar(
-      content: Text(error.toString()),
-      backgroundColor: Theme.of(context).errorColor,
-    );
-
-    Scaffold.of(context).hideCurrentSnackBar();
-    Scaffold.of(context).showSnackBar(snackbar);
   }
 
   void _showUndoDeleteSnackbar(Person person) {
@@ -137,7 +128,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
         },
         finishedWidgetBuilder: (context, people, error) {
           if (error != null) {
-            _showErrorSnackbar(error);
+            showErrorSnackbar(context, error);
           }
 
           if (people == null || people.isEmpty) {

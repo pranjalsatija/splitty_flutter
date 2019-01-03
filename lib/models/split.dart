@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
-import 'package:splitty/models/item.dart';
+import 'package:splitty/models/_index.dart';
 
 class Split {
   List<Item> items;

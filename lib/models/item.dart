@@ -1,5 +1,5 @@
 import 'package:intl/intl.dart';
-import 'package:splitty/models/person.dart';
+import 'package:splitty/models/_index.dart';
 
 class Item {
   String name;
@@ -7,6 +7,7 @@ class Item {
   double price;
 
   String get formattedDescription {
+    // TODO: Return a real value here.
     return '\$X.Y · Everyone';
   }
 

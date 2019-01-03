@@ -47,6 +47,9 @@
   "noPeople": {
     "en": "You haven't added anyone to Splitty! Go to the People tab and add everyone you want to split with, then come back here."
   },
+  "noSelectedPeople": {
+    "en": "Please select one or more people to continue."
+  },
   "people": {
     "en": "People"
   },

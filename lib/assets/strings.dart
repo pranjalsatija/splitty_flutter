@@ -45,6 +45,7 @@ class Strings {
   String get newItem => string('newItem');
   String get newSplit => string('newSplit');
   String get noPeople => string('noPeople');
+  String get noSelectedPeople => string('noSelectedPeople');
   String get people => string('people');
   String get personName => string('personName');
   String get selectAll => string('selectAll');

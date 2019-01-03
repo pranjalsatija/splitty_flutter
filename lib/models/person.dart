@@ -16,6 +16,18 @@ class Person {
   Map toJSON() => {
     'name': name,
   };
+
+  @override
+  bool operator ==(other) {
+    if (other is Person) {
+      return name == other.name;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  int get hashCode => name.hashCode;
 }
 
 class PersonController {
