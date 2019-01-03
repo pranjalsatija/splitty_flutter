@@ -9,7 +9,7 @@ typedef LoadingWidgetBuilder = Widget Function(BuildContext context);
 /// too frequently. It also simplifies the concept of [AsyncSnapshot] so [Future]
 /// results can be expressed as either loading or finished.
 @immutable
-class CachingFutureBuilder<T> extends StatelessWidget {
+class SimpleFutureBuilder<T> extends StatelessWidget {
   /// The cached data to make available to this widget. If [future] is loading
   /// and [cachedData] is non-null, it will be used to create a finished state.
   final T cachedData;
@@ -28,7 +28,7 @@ class CachingFutureBuilder<T> extends StatelessWidget {
   /// The builder responsible for creating a finished state to be displayed.
   final FinishedWidgetBuilder<T> finishedWidgetBuilder;
 
-  CachingFutureBuilder({@required this.future, this.cachedData, this.cacheSaver, @required this.loadingWidgetBuilder, @required this.finishedWidgetBuilder});
+  SimpleFutureBuilder({@required this.future, this.cachedData, this.cacheSaver, @required this.loadingWidgetBuilder, @required this.finishedWidgetBuilder});
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,7 @@ class CachingFutureBuilder<T> extends StatelessWidget {
 
           hasData:
           default:
-            if (snapshot.hasData) {
+            if (snapshot.hasData && cacheSaver != null) {
               cacheSaver(snapshot.data);
             }
 

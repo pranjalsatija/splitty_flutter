@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class SectionedForm extends StatelessWidget {
   final EdgeInsetsGeometry padding;
-  final List<FormSection> sections;
+  final List<Widget> sections;
 
   SectionedForm({
     this.padding = const EdgeInsets.only(bottom: 16),

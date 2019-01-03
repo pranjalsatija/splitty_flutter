@@ -20,7 +20,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
   Future<List<Person>> _peopleFuture;
 
   /// Used with CachingFutureBuilder.
-  List<Person> _people;
+  List<Person> _cachedPeople;
 
   _PeopleScreenState() {
     _peopleFuture = PersonController.allPeople();
@@ -126,10 +126,10 @@ class _PeopleScreenState extends State<PeopleScreen> {
       appBar: AppBar(
         title: Text(Strings.of(context).people),
       ),
-      body: CachingFutureBuilder<List<Person>>(
+      body: SimpleFutureBuilder<List<Person>>(
         future: _peopleFuture,
-        cachedData: _people,
-        cacheSaver: (people) => _people = people,
+        cachedData: _cachedPeople,
+        cacheSaver: (people) => _cachedPeople = people,
         loadingWidgetBuilder: (context) {
           return Center(
             child: CircularProgressIndicator(),

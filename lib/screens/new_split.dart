@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:splitty/assets/strings.dart';
 import 'package:splitty/models/item.dart';
 import 'package:splitty/models/split.dart';
+import 'package:splitty/screens/new_item/new_item.dart';
 import 'package:splitty/widgets/_index.dart';
 
 import 'main_tab.dart';
-import 'new_item.dart';
 
 class NewSplitScreen extends StatefulWidget
     implements BottomNavigationBarScreen {
@@ -47,7 +47,7 @@ class _NewSplitScreenState extends State<NewSplitScreen> {
       appBar: AppBar(
         title: Text(Strings.of(context).newSplit),
       ),
-      body: CachingFutureBuilder<Split>(
+      body: SimpleFutureBuilder<Split>(
         future: _currentSplitFuture,
         cachedData: _currentSplit,
         cacheSaver: (currentSplit) => _currentSplit = currentSplit,

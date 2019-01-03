@@ -23,6 +23,9 @@
   "existingSplits": {
     "en": "Existing Splits"
   },
+  "invalidPrice": {
+    "en": "Please enter a valid price for this item."
+  },
   "itemInfo": {
     "en": "Item Info"
   },
@@ -32,17 +35,26 @@
   "itemPrice": {
     "en": "Item Price"
   },
+  "missingName": {
+    "en": "Please provide a name for this item."
+  },
   "newItem": {
     "en": "New Item"
   },
   "newSplit": {
     "en": "New Split"
   },
+  "noPeople": {
+    "en": "You haven't added anyone to Splitty! Go to the People tab and add everyone you want to split with, then come back here."
+  },
   "people": {
     "en": "People"
   },
   "personName": {
     "en": "Person's Name"
+  },
+  "selectAll": {
+    "en": "Select All"
   },
   "undo": {
     "en": "Undo"

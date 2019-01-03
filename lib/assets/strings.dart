@@ -37,13 +37,17 @@ class Strings {
   String deletedPerson(String name) => interpolated('deletedPerson', [name]);
   String get done => string('done');
   String get existingSplits => string('existingSplits');
+  String get invalidPrice => string('invalidPrice');
   String get itemInfo => string('itemInfo');
   String get itemName => string('itemName');
   String get itemPrice => string('itemPrice');
+  String get missingName => string('missingName');
   String get newItem => string('newItem');
   String get newSplit => string('newSplit');
+  String get noPeople => string('noPeople');
   String get people => string('people');
   String get personName => string('personName');
+  String get selectAll => string('selectAll');
   String get undo => string('undo');
 }
 

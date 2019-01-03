@@ -27,21 +27,31 @@ class Item {
 
 class ItemPriceInputFormatter {
   static String get currencySymbol => NumberFormat.simpleCurrency().currencySymbol;
+  static NumberFormat get formatter => NumberFormat.currency(symbol: '');
 
-  static reformat(String text) {
-    final formatter = NumberFormat.currency(symbol: '');
+  static double _parse(String text) {
     double parsedInput;
 
     try {
-      parsedInput = NumberFormat.simpleCurrency().parse(text);
+      parsedInput = formatter.parse(text);
     } catch (error) {
       parsedInput = double.tryParse(text);
     }
+
+    return parsedInput;
+  }
+
+  static String reformat(String text) {
+    double parsedInput = _parse(text);
 
     if (parsedInput != null) {
       return formatter.format(parsedInput);
     } else {
       return text;
     }
+  }
+
+  static bool validate(String text) {
+    return _parse(text) != null;
   }
 }
