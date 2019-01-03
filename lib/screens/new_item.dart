@@ -14,6 +14,8 @@ class NewItemScreen extends StatefulWidget {
 class _NewItemScreenState extends State<NewItemScreen> {
   final _priceTextFieldController = TextEditingController();
   final _priceTextFieldFocusNode = FocusNode();
+
+  bool _isSelected = false;
   
   _NewItemScreenState() {
     _priceTextFieldFocusNode.addListener(_reformatPrice);
@@ -69,6 +71,21 @@ class _NewItemScreenState extends State<NewItemScreen> {
               ],
             ),
           ),
+          FormSection(
+            title: Strings.of(context).people,
+            body: FormSectionBody(
+              padding: EdgeInsets.all(0),
+              children: <Widget>[
+                TextCheckbox(
+                  isSelected: _isSelected,
+                  onChanged: (newValue) => setState(() {
+                    _isSelected = newValue;
+                  }),
+                  text: 'Test Checkbox',
+                ),
+              ],
+            ),
+          )
         ],
       ),
       floatingActionButton: FloatingActionButton(
