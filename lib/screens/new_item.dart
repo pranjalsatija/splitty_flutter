@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:splitty/assets/strings.dart';
 import 'package:splitty/models/item.dart';
+import 'package:splitty/utilities/keyboard.dart';
 import 'package:splitty/widgets/_index.dart';
 
 class NewItemScreen extends StatefulWidget {
@@ -51,7 +52,7 @@ class _NewItemScreenState extends State<NewItemScreen> {
                   ),
                   textCapitalization: TextCapitalization.words,
                   textInputAction: TextInputAction.next,
-                  onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(_priceTextFieldFocusNode),
+                  onFieldSubmitted: (_) => Keyboard.of(context).focus(_priceTextFieldFocusNode),
                 ),
                 TextFormField(
                   controller: _priceTextFieldController,
@@ -63,6 +64,7 @@ class _NewItemScreenState extends State<NewItemScreen> {
                   ),
                   focusNode: _priceTextFieldFocusNode,
                   keyboardType: TextInputType.number,
+                  onFieldSubmitted: (_) => Keyboard.of(context).dismiss(),
                 ),
               ],
             ),
