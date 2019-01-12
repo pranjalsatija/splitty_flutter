@@ -129,21 +129,27 @@ class NewItemFormState extends State<NewItemForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: ListView(
-        children: <Widget>[
-          FormSection(
-            title: Strings.of(context).itemInfo,
-            body: _buildItemInfoSectionBody(context),
-          ),
-          FormSection(
-            title: Strings.of(context).people,
-            body: _buildPeopleSectionBody(context),
-            padding: EdgeInsets.all(16),
-          ),
-        ],
-      ),
-    );
+    if (widget.people.isEmpty) {
+      return ListViewEmptyState(
+        message: Strings.of(context).noPeople,
+      );
+    } else {
+      return Form(
+        key: _formKey,
+        child: ListView(
+          children: <Widget>[
+            FormSection(
+              title: Strings.of(context).itemInfo,
+              body: _buildItemInfoSectionBody(context),
+            ),
+            FormSection(
+              title: Strings.of(context).people,
+              body: _buildPeopleSectionBody(context),
+              padding: EdgeInsets.all(16),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }

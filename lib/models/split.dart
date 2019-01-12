@@ -63,4 +63,14 @@ class SplitController {
     await file.writeAsString(json.encode(split.toJSON()));
     return split;
   }
+
+  static Future<Split> deleteItem({
+    Split split,
+    Item item,
+  }) async {
+    split.items.remove(item);
+    final file = File(split.path);
+    await file.writeAsString(json.encode(split.toJSON()));
+    return split;
+  }
 }

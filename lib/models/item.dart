@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:splitty/models/_index.dart';
+import 'package:splitty/utilities/_index.dart';
 
 class Item {
   String name;
@@ -23,6 +24,20 @@ class Item {
     'price': this.price,
     'people': this.people.map((p) => p.toJSON()).toList(),
   };
+
+
+  @override
+  bool operator ==(other) {
+    if (other is Item) {
+      return other.name == name && other.price == price;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  // TODO: implement hashCode
+  int get hashCode => hash2(name, price);
 }
 
 class ItemPriceInputFormatter {

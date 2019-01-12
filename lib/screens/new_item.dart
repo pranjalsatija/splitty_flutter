@@ -11,7 +11,25 @@ class NewItemScreen extends StatefulWidget {
 
 class _NewItemScreenState extends State<NewItemScreen> {
   final _formKey = GlobalKey<NewItemFormState>();
+
   final _peopleFuture = PersonController.allPeople();
+  List<Person> _people;
+
+  Widget _buildFloatingActionButton() {
+    if (_people == null || _people.isEmpty) {
+      return null;
+    } else {
+      return FloatingActionButton(
+        child: Icon(Icons.done),
+        onPressed: () {
+          if (_formKey.currentState.validate()) {
+            _formKey.currentState.save();
+            Navigator.of(context).pop(_formKey.currentState.item);
+          }
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +38,7 @@ class _NewItemScreenState extends State<NewItemScreen> {
         title: Text(Strings.of(context).newItem),
       ),
       body: SimpleFutureBuilder<List<Person>>(
+        cacheSaver: (people) => _people = people,
         future: _peopleFuture,
         loadingWidgetBuilder: (context) {
           return Center(
@@ -33,15 +52,7 @@ class _NewItemScreenState extends State<NewItemScreen> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.done),
-        onPressed: () {
-          if (_formKey.currentState.validate()) {
-            _formKey.currentState.save();
-            Navigator.of(context).pop(_formKey.currentState.item);
-          }
-        },
-      ),
+      floatingActionButton: _buildFloatingActionButton(),
     );
   }
 }

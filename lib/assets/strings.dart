@@ -34,6 +34,7 @@ class Strings {
   String get addPersonMessage => string('addPersonMessage');
   String get addPersonPrompt => string('addPersonPrompt');
   String get appName => string('appName');
+  String deletedItem(String name) => interpolated('deletedItem', [name]);
   String deletedPerson(String name) => interpolated('deletedPerson', [name]);
   String get done => string('done');
   String get existingSplits => string('existingSplits');

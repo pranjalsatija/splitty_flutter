@@ -25,8 +25,8 @@ class _PeopleScreenState extends State<PeopleScreen> {
     _peopleFuture = PersonController.allPeople();
   }
 
-  void _addPerson() async {
-    final result = await _promptUserForName();
+  void _addPerson(String name) async {
+    final result = name ?? await _promptUserForName();
     if (result != null && result.isNotEmpty) {
       try {
         await PersonController.create(result);
@@ -88,12 +88,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
       content: Text(Strings.of(context).deletedPerson(person.name)),
       action: SnackBarAction(
         label: Strings.of(context).undo,
-        onPressed: () async {
-          await PersonController.create(person.name);
-          setState(() {
-            _peopleFuture = PersonController.allPeople();
-          });
-        },
+        onPressed: () => _addPerson(person.name),
       ),
     );
 
@@ -137,7 +132,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
             return ListViewEmptyState(
               actionText: Strings.of(context).addPersonPrompt,
               message: Strings.of(context).addPersonMessage,
-              onPressed: () => _addPerson(),
+              onPressed: () => _addPerson(null),
             );
           } else {
             return ListView.separated(
@@ -150,7 +145,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.person_add),
-        onPressed: () => _addPerson(),
+        onPressed: () => _addPerson(null),
       ),
     );
   }
