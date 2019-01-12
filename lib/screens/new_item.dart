@@ -38,10 +38,7 @@ class _NewItemScreenState extends State<NewItemScreen> {
         onPressed: () {
           if (_formKey.currentState.validate()) {
             _formKey.currentState.save();
-            print(_formKey.currentState.item.name);
-            print(_formKey.currentState.item.price);
-            print(_formKey.currentState.item.people.map((p) => p.name));
-            // TODO: Save the item.
+            Navigator.of(context).pop(_formKey.currentState.item);
           }
         },
       ),

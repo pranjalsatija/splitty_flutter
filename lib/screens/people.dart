@@ -19,9 +19,7 @@ class PeopleScreen extends StatefulWidget implements BottomNavigationBarScreen {
 
 class _PeopleScreenState extends State<PeopleScreen> {
   Future<List<Person>> _peopleFuture;
-
-  /// Used with CachingFutureBuilder.
-  List<Person> _cachedPeople;
+  List<Person> _people;
 
   _PeopleScreenState() {
     _peopleFuture = PersonController.allPeople();
@@ -98,16 +96,15 @@ class _PeopleScreenState extends State<PeopleScreen> {
   }
 
   Widget _buildPersonListTile(Person person) {
-    return ListTile(
-      contentPadding: EdgeInsets.only(left: 16, right: 0),
-      title: Text(person.name),
-      trailing: IconButton(
-        icon: Icon(
-          Icons.delete,
-          color: Theme.of(context).errorColor,
-        ),
-        onPressed: () => _deletePerson(person),
+    return Dismissible(
+      key: Key(person.name),
+      child: ListTile(
+        contentPadding: EdgeInsets.only(left: 16, right: 0),
+        title: Text(person.name),
       ),
+      onDismissed: (_) {
+        _deletePerson(person);
+      },
     );
   }
 
@@ -119,8 +116,8 @@ class _PeopleScreenState extends State<PeopleScreen> {
       ),
       body: SimpleFutureBuilder<List<Person>>(
         future: _peopleFuture,
-        cachedData: _cachedPeople,
-        cacheSaver: (people) => _cachedPeople = people,
+        cachedData: _people,
+        cacheSaver: (people) => _people = people,
         loadingWidgetBuilder: (context) {
           return Center(
             child: CircularProgressIndicator(),

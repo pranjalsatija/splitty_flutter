@@ -8,8 +8,9 @@ import 'package:splitty/models/_index.dart';
 class Split {
   List<Item> items;
   String name;
+  String path;
 
-  Split({this.items, this.name});
+  Split({this.items, this.name, this.path});
 
   Split.fromJSON(Map json) {
     name = json['name'];
@@ -23,20 +24,43 @@ class Split {
 }
 
 class SplitController {
-  static Future<Split> currentSplit() async {
+  static Future<File> _currentSplitStorage() async {
     final directory = await getApplicationDocumentsDirectory();
     final file = File(path.join(directory.path, 'current_split.json'));
     final exists = await file.exists();
 
     if (exists) {
-      String existingSplitString = await file.readAsString();
-      Map existingSplitJSON = json.decode(existingSplitString);
-      return Split.fromJSON(existingSplitJSON);
+      return file;
     } else {
+      return file.create();
+    }
+  }
+
+  static Future<Split> currentSplit() async {
+    final currentSplitStorage = await _currentSplitStorage();
+    final currentSplitString = await currentSplitStorage.readAsString();
+
+    try {
+      Map currentSplitJSON = json.decode(currentSplitString);
+      final split = Split.fromJSON(currentSplitJSON);
+      split.path = currentSplitStorage.path;
+      return split;
+    } catch(e) {
       return Split(
         items: [],
-        name: null
+        name: null,
+        path: currentSplitStorage.path,
       );
     }
+  }
+
+  static Future<Split> addItem({
+    Split split,
+    Item item,
+  }) async {
+    split.items.add(item);
+    final file = File(split.path);
+    await file.writeAsString(json.encode(split.toJSON()));
+    return split;
   }
 }

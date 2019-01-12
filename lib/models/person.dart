@@ -61,8 +61,7 @@ class PersonController {
   static Future<void> create(String name) async {
     final existingPeople = await allPeople();
     if (existingPeople.indexWhere((p) => p.name == name) != -1) {
-      throw new ArgumentError('A person named $name already exists.');
-
+      throw 'A person named $name already exists.';
     }
 
     existingPeople.add(Person(name));

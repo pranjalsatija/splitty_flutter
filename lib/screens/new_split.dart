@@ -28,9 +28,18 @@ class _NewSplitScreenState extends State<NewSplitScreen> {
   }
 
   void _addItem() async {
-    Navigator.of(context).push(
+    final Item newItem = await Navigator.of(context).push(
       MaterialPageRoute(builder: (_) => NewItemScreen()),
     );
+
+    if (newItem != null) {
+      setState(() {
+        _currentSplitFuture = SplitController.addItem(
+          item: newItem,
+          split: _currentSplit,
+        );
+      });
+    }
   }
 
   Widget _buildItemListTile(Item item) {

@@ -7,8 +7,7 @@ class Item {
   double price;
 
   String get formattedDescription {
-    // TODO: Return a real value here.
-    return '\$X.Y · Everyone';
+    return '${ItemPriceInputFormatter.format(price)}';
   }
 
   Item({this.name, this.people, this.price});
@@ -28,13 +27,16 @@ class Item {
 
 class ItemPriceInputFormatter {
   static String get currencySymbol => NumberFormat.simpleCurrency().currencySymbol;
-  static NumberFormat get formatter => NumberFormat.currency(symbol: '');
+
+  static String format(double value) {
+    return NumberFormat.simpleCurrency().format(value);
+  }
 
   static double parse(String text) {
     double parsedInput;
 
     try {
-      parsedInput = formatter.parse(text);
+      parsedInput = NumberFormat.simpleCurrency().parse(text);
     } catch (error) {
       parsedInput = double.tryParse(text);
     }
@@ -46,7 +48,7 @@ class ItemPriceInputFormatter {
     double parsedInput = parse(text);
 
     if (parsedInput != null) {
-      return formatter.format(parsedInput);
+      return NumberFormat.currency(symbol: '').format(parsedInput);
     } else {
       return text;
     }
