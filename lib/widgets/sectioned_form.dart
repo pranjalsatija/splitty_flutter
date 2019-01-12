@@ -1,40 +1,14 @@
 import 'package:flutter/material.dart';
 
-class SectionedForm extends StatelessWidget {
-  final Key formKey;
-  final VoidCallback onChanged;
-  final EdgeInsetsGeometry padding;
-  final List<Widget> sections;
-
-  SectionedForm({
-    @required this.formKey,
-    this.padding = const EdgeInsets.only(bottom: 16),
-    this.onChanged,
-    @required this.sections,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Form(
-      key: formKey,
-      onChanged: onChanged,
-      child: ListView(
-        children: sections,
-        padding: padding,
-      ),
-    );
-  }
-}
-
 class FormSection extends StatelessWidget {
   final Widget body;
   final EdgeInsetsGeometry padding;
   final String title;
 
   FormSection({
-    this.body,
+    @required this.body,
     this.padding = const EdgeInsets.only(top: 16, left: 16, right: 16),
-    this.title,
+    @required this.title,
   });
 
   Widget build(BuildContext context) {
@@ -67,7 +41,7 @@ class FormSectionBody extends StatelessWidget {
   final EdgeInsetsGeometry padding;
 
   FormSectionBody({
-    this.children,
+    @required this.children,
     this.padding = const EdgeInsets.symmetric(horizontal: 8),
   });
 

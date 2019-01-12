@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:splitty/assets/strings.dart';
 import 'package:splitty/models/_index.dart';
-import 'package:splitty/screens/new_item/new_item.dart';
+import 'package:splitty/screens/new_item.dart';
 import 'package:splitty/widgets/_index.dart';
 
 import 'main_tab.dart';

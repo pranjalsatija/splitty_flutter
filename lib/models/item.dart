@@ -30,7 +30,7 @@ class ItemPriceInputFormatter {
   static String get currencySymbol => NumberFormat.simpleCurrency().currencySymbol;
   static NumberFormat get formatter => NumberFormat.currency(symbol: '');
 
-  static double _parse(String text) {
+  static double parse(String text) {
     double parsedInput;
 
     try {
@@ -43,7 +43,7 @@ class ItemPriceInputFormatter {
   }
 
   static String reformat(String text) {
-    double parsedInput = _parse(text);
+    double parsedInput = parse(text);
 
     if (parsedInput != null) {
       return formatter.format(parsedInput);
@@ -53,6 +53,6 @@ class ItemPriceInputFormatter {
   }
 
   static bool validate(String text) {
-    return _parse(text) != null;
+    return parse(text) != null;
   }
 }

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
+/// A widget that displays some text alongside a checkbox. The text's style is
+/// automatically updated so that the text is bold when the widget is selected.
 class TextCheckbox extends StatelessWidget {
-  final bool isSelected;
   final ValueChanged<bool> onChanged;
+  final bool value;
   final String text;
 
   TextCheckbox({
-    @required this.isSelected,
     @required this.onChanged,
+    @required this.value,
     @required this.text
   });
 
@@ -16,12 +18,12 @@ class TextCheckbox extends StatelessWidget {
     return Row(
       children: <Widget>[
         Checkbox(
-          value: isSelected,
           onChanged: onChanged,
+          value: value,
         ),
         Text(this.text,
           style: TextStyle(
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal
+            fontWeight: value ? FontWeight.bold : FontWeight.normal
           ),
         ),
       ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:splitty/assets/strings.dart';
 import 'package:splitty/models/_index.dart';
-import 'package:splitty/screens/new_item/new_item_form.dart';
+import 'package:splitty/widgets/new_item_form.dart';
 import 'package:splitty/widgets/_index.dart';
 
 class NewItemScreen extends StatefulWidget {
@@ -10,16 +10,8 @@ class NewItemScreen extends StatefulWidget {
 }
 
 class _NewItemScreenState extends State<NewItemScreen> {
-  final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<NewItemFormState>();
   final _peopleFuture = PersonController.allPeople();
-
-  void _save() {
-    if (!_formKey.currentState.validate()) {
-      return;
-    }
-
-
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +28,22 @@ class _NewItemScreenState extends State<NewItemScreen> {
         },
         finishedWidgetBuilder: (context, people, error) {
           return NewItemForm(
-            formKey: _formKey,
+            key: _formKey,
             people: people,
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.done),
-        onPressed: _save,
+        onPressed: () {
+          if (_formKey.currentState.validate()) {
+            _formKey.currentState.save();
+            print(_formKey.currentState.item.name);
+            print(_formKey.currentState.item.price);
+            print(_formKey.currentState.item.people.map((p) => p.name));
+            // TODO: Save the item.
+          }
+        },
       ),
     );
   }
