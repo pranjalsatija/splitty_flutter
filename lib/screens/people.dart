@@ -45,6 +45,11 @@ class _PeopleScreenState extends State<PeopleScreen> {
     _showUndoDeleteSnackbar(person);
 
     setState(() {
+      // This is necessary so that the Dismissible responsible for deleting the
+      // person is immediately removed from the widget tree. If this isn't done,
+      // it remains in the tree until PersonController.allPeople() completes,
+      // and that causes exceptions in debug builds.
+      _people.remove(person);
       _peopleFuture = PersonController.allPeople();
     });
   }
