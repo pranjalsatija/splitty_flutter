@@ -4,27 +4,40 @@ import 'package:splitty/models/_index.dart';
 import 'package:splitty/utilities/_index.dart';
 import 'package:splitty/widgets/_index.dart';
 
-class NewItemForm extends StatefulWidget {
+class ItemForm extends StatefulWidget {
+  final Item item;
   final List<Person> people;
 
-  NewItemForm({
+  ItemForm({
+    @required this.item,
     @required Key key,
     @required this.people,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => NewItemFormState();
+  State<StatefulWidget> createState() => ItemFormState(
+    item: item,
+  );
 }
 
-class NewItemFormState extends State<NewItemForm> {
-  final item = Item();
+class ItemFormState extends State<ItemForm> {
+  final Item item;
 
   final _formKey = GlobalKey<FormState>();
   final _nameTextFieldController = TextEditingController();
+  final _peopleMultiSelectFormFieldKey = GlobalKey<FormFieldState<List<bool>>>();
   final _priceTextFieldController = TextEditingController();
   final _priceTextFieldFocusNode = FocusNode();
 
-  NewItemFormState() {
+  ItemFormState({
+    @required this.item,
+  }) {
+    _nameTextFieldController.text = item.name;
+
+    if (item.price != null) {
+      _priceTextFieldController.text = ItemPriceInputFormatter.format(item.price, includeCurrencySymbol: false);
+    }
+
     _priceTextFieldFocusNode.addListener(_reformatPrice);
   }
 
@@ -41,7 +54,7 @@ class NewItemFormState extends State<NewItemForm> {
 
   void _reformatPrice() {
     String text = _priceTextFieldController.text;
-    _priceTextFieldController.text = ItemPriceInputFormatter.reformat(text);
+    _priceTextFieldController.text = ItemPriceInputFormatter.reformat(text, includeCurrencySymbol: false);
   }
 
   Widget _buildItemInfoSectionBody(BuildContext context) {
@@ -60,7 +73,7 @@ class NewItemFormState extends State<NewItemForm> {
           textCapitalization: TextCapitalization.words,
           textInputAction: TextInputAction.next,
           onFieldSubmitted: (_) => Keyboard.of(context).focus(_priceTextFieldFocusNode),
-          onSaved: (text) => item.name = text,
+          onSaved: (text) => widget.item.name = text,
           validator: (input) => input.isEmpty ? Strings.of(context).missingName : null,
         ),
         TextFormField(
@@ -75,7 +88,7 @@ class NewItemFormState extends State<NewItemForm> {
           focusNode: _priceTextFieldFocusNode,
           keyboardType: TextInputType.number,
           onFieldSubmitted: (_) => Keyboard.of(context).dismiss(),
-          onSaved: (text) => item.price = ItemPriceInputFormatter.parse(text),
+          onSaved: (text) => widget.item.price = ItemPriceInputFormatter.parse(text),
           validator: (input) => ItemPriceInputFormatter.validate(input) ? null : Strings.of(context).invalidPrice,
         ),
       ],
@@ -83,36 +96,44 @@ class NewItemFormState extends State<NewItemForm> {
   }
 
   Widget _buildPeopleSectionBody(BuildContext context) {
+    final initialValue = List.filled(widget.people.length, false);
+    for (int i = 0; i < widget.people.length; i++) {
+      if (widget.item.people.contains(widget.people[i])) {
+        initialValue[i] = true;
+      }
+    }
+
     return FormSectionBody(
       padding: EdgeInsets.all(0),
       children: <Widget>[
         MultiSelectFormField(
           builder: (index, state) {
-            if (index == 0) {
-              return TextCheckbox(
-                onChanged: (newValue) {
-                  state.didChange(List.filled(state.value.length, newValue));
-                },
-                text: Strings.of(context).selectAll,
-                value: state.value.skip(1).every((v) => v),
-              );
-            } else {
-              return TextCheckbox(
-                onChanged: (newValue) {
-                  state.value[index] = newValue;
-                  state.didChange(state.value);
-                },
-                text: widget.people[index - 1].name,
-                value: state.value[index],
-              );
-            }
+            return TextCheckbox(
+              onChanged: (newValue) {
+                state.value[index] = newValue;
+                state.didChange(state.value);
+              },
+              text: widget.people[index].name,
+              value: state.value[index],
+            );
           },
-          numberOfItems: widget.people.length + 1,
+          initialValue: initialValue,
+          key: _peopleMultiSelectFormFieldKey,
+          numberOfItems: widget.people.length,
           onSaved: (values) {
-            item.people =  Map<int, Person>.fromIterable(
+            widget.item.people =  Map<int, Person>.fromIterable(
               widget.people.asMap().keys.where((i) => values[i]),
               value: (i) => widget.people[i],
             ).values.toList();
+          },
+          selectAllBuilder: (state) {
+            return TextCheckbox(
+              onChanged: (newValue) {
+                state.didChange(List.filled(state.value.length, newValue));
+              },
+              text: Strings.of(context).selectAll,
+              value: state.value.every((v) => v),
+            );
           },
           validator: (values) {
             if (values.contains(true)) {

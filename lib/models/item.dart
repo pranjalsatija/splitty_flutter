@@ -1,17 +1,18 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:splitty/models/_index.dart';
 import 'package:splitty/utilities/_index.dart';
 
 class Item {
   String name;
-  List<Person> people;
+  List<Person> people = List();
   double price;
 
   String get formattedDescription {
-    return '${ItemPriceInputFormatter.format(price)}';
+    return '${ItemPriceInputFormatter.format(price, includeCurrencySymbol: true)}';
   }
 
-  Item({this.name, this.people, this.price});
+  Item();
 
   Item.fromJSON(Map json) {
     this.name = json['name'];
@@ -36,15 +37,18 @@ class Item {
   }
 
   @override
-  // TODO: implement hashCode
   int get hashCode => hash2(name, price);
 }
 
 class ItemPriceInputFormatter {
   static String get currencySymbol => NumberFormat.simpleCurrency().currencySymbol;
 
-  static String format(double value) {
-    return NumberFormat.simpleCurrency().format(value);
+  static String format(double value, {@required bool includeCurrencySymbol}) {
+    if (includeCurrencySymbol) {
+      return NumberFormat.simpleCurrency().format(value);
+    } else {
+      return NumberFormat.currency(symbol: '').format(value);
+    }
   }
 
   static double parse(String text) {
@@ -59,11 +63,13 @@ class ItemPriceInputFormatter {
     return parsedInput;
   }
 
-  static String reformat(String text) {
+  static String reformat(String text, {@required bool includeCurrencySymbol}) {
     double parsedInput = parse(text);
 
-    if (parsedInput != null) {
+    if (parsedInput != null && includeCurrencySymbol) {
       return NumberFormat.currency(symbol: '').format(parsedInput);
+    } else if (parsedInput != null) {
+      return NumberFormat.simpleCurrency().format(parsedInput);
     } else {
       return text;
     }

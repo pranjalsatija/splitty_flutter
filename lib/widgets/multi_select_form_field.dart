@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
 
 typedef MultiSelectFormFieldItemBuilder = Widget Function(int, FormFieldState<List<bool>>);
+typedef MultiSelectFormFieldSelectAllBuilder = Widget Function(FormFieldState<List<bool>>);
 
 class MultiSelectFormField extends FormField<List<bool>> {
   MultiSelectFormField({
     @required MultiSelectFormFieldItemBuilder builder,
+    @required List<bool> initialValue,
+    Key key,
     @required int numberOfItems,
     @required FormFieldSetter<List<bool>> onSaved,
+    MultiSelectFormFieldSelectAllBuilder selectAllBuilder,
     @required FormFieldValidator<List<bool>> validator,
   }): super(
     builder: (state) {
       final widgets = state.value.asMap().map((index, value) {
         return MapEntry(index, builder(index, state));
       }).values.toList();
+      widgets.insert(0, selectAllBuilder(state));
 
       return _MultiSelectFormFieldBody(
         widgets: widgets,
       );
     },
-    initialValue: List.filled(numberOfItems, false),
+    key: key,
+    initialValue: initialValue,
     onSaved: onSaved,
     validator: validator,
   );

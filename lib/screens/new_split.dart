@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:splitty/assets/strings.dart';
 import 'package:splitty/models/_index.dart';
-import 'package:splitty/screens/new_item.dart';
+import 'package:splitty/screens/item_screen.dart';
 import 'package:splitty/widgets/_index.dart';
 
 import 'main_tab.dart';
@@ -22,15 +22,17 @@ class _NewSplitScreenState extends State<NewSplitScreen> {
   Future<Split> _currentSplitFuture;
   Split _currentSplit;
 
-  bool _switchValue = false;
-
   _NewSplitScreenState() {
     _currentSplitFuture = SplitController.currentSplit();
   }
 
   void _addItem(Item item) async {
     final Item newItem = item ?? await Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => NewItemScreen()),
+      MaterialPageRoute(
+        builder: (_) => ItemScreen(
+          item: Item(),
+        ),
+      ),
     );
 
     if (newItem != null) {
@@ -47,6 +49,10 @@ class _NewSplitScreenState extends State<NewSplitScreen> {
     _showUndoDeleteSnackbar(item);
 
     setState(() {
+      // This is necessary so that the Dismissible responsible for deleting the
+      // person is immediately removed from the widget tree. If this isn't done,
+      // it remains in the tree until SplitController.deleteItem() completes,
+      // and that causes exceptions in debug builds.
       _currentSplit.items.remove(item);
       _currentSplitFuture = SplitController.deleteItem(
         item: item,
@@ -73,8 +79,11 @@ class _NewSplitScreenState extends State<NewSplitScreen> {
         title: Text(item.name),
         subtitle: Text(item.formattedDescription),
         onTap: () {
-          print('Tapped ${item.name}.');
-          // TODO: Present a details screen for the item.
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ItemScreen(item: item)
+            ),
+          );
         },
       ),
       key: Key(item.name),
@@ -107,16 +116,23 @@ class _NewSplitScreenState extends State<NewSplitScreen> {
           } else {
             return ListView.separated(
               itemCount: currentSplit.items.length,
-              itemBuilder: (context, index) =>
-                  _buildItemListTile(currentSplit.items[index]),
+              itemBuilder: (context, index) => _buildItemListTile(currentSplit.items[index]),
               separatorBuilder: (context, index) => Divider(height: 1.0),
             );
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => _addItem(null),
+      floatingActionButton: Column(
+        children: <Widget>[
+          FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () => _addItem(null),
+          ),
+          FloatingActionButton(
+            child: Icon(Icons.save),
+            onPressed: () => print('Save'),
+          )
+        ],
       ),
     );
   }

@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:splitty/assets/strings.dart';
 import 'package:splitty/models/_index.dart';
-import 'package:splitty/widgets/new_item_form.dart';
+import 'package:splitty/widgets/item_form.dart';
 import 'package:splitty/widgets/_index.dart';
 
-class NewItemScreen extends StatefulWidget {
+class ItemScreen extends StatefulWidget {
+  final Item item;
+
+  ItemScreen({
+    @required this.item,
+  });
+
   @override
-  State<StatefulWidget> createState() => _NewItemScreenState();
+  State<StatefulWidget> createState() => _ItemScreenState();
 }
 
-class _NewItemScreenState extends State<NewItemScreen> {
-  final _formKey = GlobalKey<NewItemFormState>();
+class _ItemScreenState extends State<ItemScreen> {
+  final _formKey = GlobalKey<ItemFormState>();
 
   final _peopleFuture = PersonController.allPeople();
   List<Person> _people;
@@ -24,7 +30,7 @@ class _NewItemScreenState extends State<NewItemScreen> {
         onPressed: () {
           if (_formKey.currentState.validate()) {
             _formKey.currentState.save();
-            Navigator.of(context).pop(_formKey.currentState.item);
+            Navigator.of(context).pop(_formKey.currentState.widget.item);
           }
         },
       );
@@ -46,7 +52,8 @@ class _NewItemScreenState extends State<NewItemScreen> {
           );
         },
         finishedWidgetBuilder: (context, people, error) {
-          return NewItemForm(
+          return ItemForm(
+            item: widget.item,
             key: _formKey,
             people: people,
           );
