@@ -19,7 +19,7 @@ class Strings {
   }
 
   String interpolated(String key, List<dynamic> params) {
-    String s = string(key);
+    var s = string(key);
     params.forEach((param) => s = s.replaceFirst('%s', param.toString()));
     return s;
   }

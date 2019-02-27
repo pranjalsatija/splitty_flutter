@@ -53,7 +53,7 @@ class ItemFormState extends State<ItemForm> {
   bool validate() => _formKey.currentState.validate();
 
   void _reformatPrice() {
-    String text = _priceTextFieldController.text;
+    final text = _priceTextFieldController.text;
     _priceTextFieldController.text = ItemPriceInputFormatter.reformat(text, includeCurrencySymbol: false);
   }
 
@@ -97,7 +97,7 @@ class ItemFormState extends State<ItemForm> {
 
   Widget _buildPeopleSectionBody(BuildContext context) {
     final initialValue = List.filled(widget.people.length, false);
-    for (int i = 0; i < widget.people.length; i++) {
+    for (var i = 0; i < widget.people.length; i++) {
       if (widget.item.people.contains(widget.people[i])) {
         initialValue[i] = true;
       }
