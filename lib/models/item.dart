@@ -15,20 +15,20 @@ class Item {
   Item();
 
   Item.fromJSON(Map json) {
-    this.name = json['name'];
-    this.price = json['price'];
-    this.people = (json['people'] as List).map((d) => Person.fromJSON(d)).toList();
+    name = json['name'];
+    price = json['price'];
+    people = (json['people'] as List).map((d) => Person.fromJSON(d)).toList();
   }
 
   Map toJSON() => {
-    'name': this.name,
-    'price': this.price,
-    'people': this.people.map((p) => p.toJSON()).toList(),
+    'name': name,
+    'price': price,
+    'people': people.map((p) => p.toJSON()).toList(),
   };
 
 
   @override
-  bool operator ==(other) {
+  bool operator ==(Object other) {
     if (other is Item) {
       return other.name == name && other.price == price;
     } else {
@@ -64,7 +64,7 @@ class ItemPriceInputFormatter {
   }
 
   static String reformat(String text, {@required bool includeCurrencySymbol}) {
-    double parsedInput = parse(text);
+    final parsedInput = parse(text);
 
     if (parsedInput != null && includeCurrencySymbol) {
       return NumberFormat.currency(symbol: '').format(parsedInput);

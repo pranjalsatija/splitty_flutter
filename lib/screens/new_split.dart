@@ -27,7 +27,7 @@ class _NewSplitScreenState extends State<NewSplitScreen> {
   }
 
   void _addItem(Item item) async {
-    final Item newItem = item ?? await Navigator.of(context).push(
+    final newItem = item ?? await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => ItemScreen(
           item: Item(),

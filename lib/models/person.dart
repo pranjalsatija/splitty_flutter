@@ -18,7 +18,7 @@ class Person {
   };
 
   @override
-  bool operator ==(other) {
+  bool operator ==(Object other) {
     if (other is Person) {
       return name == other.name;
     } else {
@@ -46,7 +46,7 @@ class PersonController {
 
   static Future<List<Person>> allPeople() async {
     final storage = await _storage();
-    String peopleString = await storage.readAsString();
+    final peopleString = await storage.readAsString();
 
     try {
       List peopleMaps = json.decode(peopleString);

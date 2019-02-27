@@ -47,12 +47,12 @@ class FormSectionBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final padded = (Widget widget) => Padding(
+    final padded = (widget) => Padding(
       child: widget,
       padding: padding,
     );
 
-    List<Widget> children = List();
+    final children = List<Widget>();
     this.children.take(this.children.length - 1).forEach((child) {
       children.add(padded(child));
       children.add(Divider(height: 1));

@@ -59,7 +59,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
 
     return showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           title: Text(Strings.of(context).addPersonPrompt),
           content: TextField(

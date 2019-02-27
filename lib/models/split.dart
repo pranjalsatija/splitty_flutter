@@ -18,8 +18,8 @@ class Split {
   }
 
   Map toJSON() => {
-    'name': this.name,
-    'items': this.items.map((i) => i.toJSON()).toList(),
+    'name': name,
+    'items': items.map((i) => i.toJSON()).toList(),
   };
 }
 
