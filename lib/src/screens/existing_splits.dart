@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:splitty/assets/strings.dart';
-
-import 'main_tab.dart';
+import 'package:splitty/src.dart';
 
 class ExistingSplitsScreen extends StatelessWidget implements BottomNavigationBarScreen {
   BottomNavigationBarItem bottomNavigationBarItem(BuildContext context) {
