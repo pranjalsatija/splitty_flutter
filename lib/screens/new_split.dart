@@ -122,17 +122,9 @@ class _NewSplitScreenState extends State<NewSplitScreen> {
           }
         },
       ),
-      floatingActionButton: Column(
-        children: <Widget>[
-          FloatingActionButton(
-            child: Icon(Icons.add),
-            onPressed: () => _addItem(null),
-          ),
-          FloatingActionButton(
-            child: Icon(Icons.save),
-            onPressed: () => print('Save'),
-          )
-        ],
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => _addItem(null),
       ),
     );
   }
