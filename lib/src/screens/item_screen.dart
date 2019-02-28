@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:splitty/assets/strings.dart';
-import 'package:splitty/models/_index.dart';
-import 'package:splitty/widgets/item_form.dart';
-import 'package:splitty/widgets/_index.dart';
+import 'package:splitty/src.dart';
 
 class ItemScreen extends StatefulWidget {
   final Item item;

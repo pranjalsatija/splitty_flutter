@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'existing_splits.dart';
-import 'new_split.dart';
-import 'people.dart';
+import 'package:splitty/src.dart';
 
 abstract class BottomNavigationBarScreen extends Widget {
   BottomNavigationBarItem bottomNavigationBarItem(BuildContext context);

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:splitty/models/_index.dart';
-import 'package:splitty/utilities/_index.dart';
+import 'package:splitty/src.dart';
 
 class Item {
   String name;
