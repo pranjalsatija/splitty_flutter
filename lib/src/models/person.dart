@@ -1,21 +1,20 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
+part 'person.g.dart';
+
+@JsonSerializable()
 class Person {
   String name;
 
   Person(this.name);
 
-  Person.fromJSON(Map json) {
-    name = json['name'];
-  }
-
-  Map toJSON() => {
-    'name': name,
-  };
+  factory Person.fromJson(Map json) => _$PersonFromJson(json);
+  Map toJson() => _$PersonToJson(this);
 
   @override
   bool operator ==(Object other) {
@@ -50,7 +49,7 @@ class PersonController {
 
     try {
       List peopleMaps = json.decode(peopleString);
-      List people = peopleMaps.map((p) => Person.fromJSON(p)).toList();
+      List people = peopleMaps.map((p) => Person.fromJson(p)).toList();
       people.sort((a, b) => a.name.compareTo(b.name));
       return people;
     } catch (e) {
@@ -65,7 +64,7 @@ class PersonController {
     }
 
     existingPeople.add(Person(name));
-    final newPeopleMaps = existingPeople.map((p) => p.toJSON()).toList();
+    final newPeopleMaps = existingPeople.map((p) => p.toJson()).toList();
     final newPeopleJSON = json.encode(newPeopleMaps);
 
     final storage = await _storage();
@@ -76,7 +75,7 @@ class PersonController {
     final existingPeople = await allPeople();
     existingPeople.removeWhere((p) => p.name == person.name);
 
-    final newPeopleMaps = existingPeople.map((p) => p.toJSON()).toList();
+    final newPeopleMaps = existingPeople.map((p) => p.toJson()).toList();
     final newPeopleJSON = json.encode(newPeopleMaps);
 
     final storage = await _storage();

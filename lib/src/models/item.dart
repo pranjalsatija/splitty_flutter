@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:splitty/src.dart';
 
+part 'item.g.dart';
+
+@JsonSerializable()
 class Item {
   String name;
   List<Person> people = List();
@@ -13,18 +17,8 @@ class Item {
 
   Item();
 
-  Item.fromJSON(Map json) {
-    name = json['name'];
-    price = json['price'];
-    people = (json['people'] as List).map((d) => Person.fromJSON(d)).toList();
-  }
-
-  Map toJSON() => {
-    'name': name,
-    'price': price,
-    'people': people.map((p) => p.toJSON()).toList(),
-  };
-
+  factory Item.fromJson(Map json) => _$ItemFromJson(json);
+  Map toJson() => _$ItemToJson(this);
 
   @override
   bool operator ==(Object other) {
