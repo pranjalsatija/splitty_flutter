@@ -15,7 +15,6 @@ export 'package:splitty/src/screens/people.dart';
 
 // utilities
 export 'package:splitty/src/utilities/errors.dart';
-export 'package:splitty/src/utilities/hash.dart';
 export 'package:splitty/src/utilities/keyboard.dart';
 
 // widgets
