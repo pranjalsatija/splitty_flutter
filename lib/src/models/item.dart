@@ -17,7 +17,7 @@ class Item {
 
   Item();
 
-  factory Item.fromJson(Map json) => _$ItemFromJson(json);
+  factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
   Map toJson() => _$ItemToJson(this);
 
   @override
@@ -48,7 +48,7 @@ class ItemPriceInputFormatter {
     double parsedInput;
 
     try {
-      parsedInput = NumberFormat.simpleCurrency().parse(text);
+      parsedInput = NumberFormat.simpleCurrency().parse(text).toDouble();
     } catch (error) {
       parsedInput = double.tryParse(text);
     }

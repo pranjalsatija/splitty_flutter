@@ -32,7 +32,7 @@ class SimpleFutureBuilder<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return FutureBuilder<T>(
       future: future,
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
@@ -54,7 +54,7 @@ class SimpleFutureBuilder<T> extends StatelessWidget {
             return finishedWidgetBuilder(context, snapshot.data ?? cachedData, snapshot.error);
         }
       },
-      initialData: cacheSaver,
+      initialData: cachedData,
     );
   }
 }

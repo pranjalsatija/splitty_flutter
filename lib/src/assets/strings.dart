@@ -20,7 +20,7 @@ class Strings {
 
   String interpolated(String key, List<dynamic> params) {
     var s = string(key);
-    params.forEach((param) => s = s.replaceFirst('%s', param.toString()));
+    params.forEach((dynamic param) => s = s.replaceFirst('%s', param.toString()));
     return s;
   }
 
@@ -34,8 +34,8 @@ class Strings {
   String get addPersonMessage => string('addPersonMessage');
   String get addPersonPrompt => string('addPersonPrompt');
   String get appName => string('appName');
-  String deletedItem(String name) => interpolated('deletedItem', [name]);
-  String deletedPerson(String name) => interpolated('deletedPerson', [name]);
+  String deletedItem(String name) => interpolated('deletedItem', <String>[name]);
+  String deletedPerson(String name) => interpolated('deletedPerson', <String>[name]);
   String get done => string('done');
   String get existingSplits => string('existingSplits');
   String get invalidPrice => string('invalidPrice');
@@ -65,7 +65,7 @@ class _StringStorage {
     if (_strings[key] is String) {
       return _strings[key] as String;
     } else if (_strings[key] is Map<String, dynamic>) {
-      final Map<String, dynamic> stringByLocale = _strings[key];
+      final stringByLocale = _strings[key] as Map<String, dynamic>;
       return stringByLocale[locale.languageCode] as String;
     } else {
       return null;

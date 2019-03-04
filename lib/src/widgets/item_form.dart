@@ -120,7 +120,7 @@ class ItemFormState extends State<ItemForm> {
           onSaved: (values) {
             widget.item.people =  Map<int, Person>.fromIterable(
               widget.people.asMap().keys.where((i) => values[i]),
-              value: (i) => widget.people[i],
+              value: (dynamic i) => widget.people[i as int],
             ).values.toList();
           },
           selectAllBuilder: (state) {

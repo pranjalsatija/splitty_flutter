@@ -16,7 +16,7 @@ class Split {
 
   Split({this.items, this.name, this.path});
 
-  factory Split.fromJson(Map json) => _$SplitFromJson(json);
+  factory Split.fromJson(Map<String, dynamic> json) => _$SplitFromJson(json);
   Map toJson() => _$SplitToJson(this);
 }
 
@@ -38,7 +38,7 @@ class SplitController {
     final currentSplitString = await currentSplitStorage.readAsString();
 
     try {
-      Map currentSplitJSON = json.decode(currentSplitString);
+      final currentSplitJSON = json.decode(currentSplitString) as Map<String, dynamic>;
       final split = Split.fromJson(currentSplitJSON);
       split.path = currentSplitStorage.path;
       return split;

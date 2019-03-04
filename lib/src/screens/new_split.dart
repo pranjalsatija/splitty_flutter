@@ -76,7 +76,7 @@ class _NewSplitScreenState extends State<NewSplitScreen> {
         title: Text(item.name),
         subtitle: Text(item.formattedDescription),
         onTap: () {
-          Navigator.of(context).push(
+          Navigator.of(context).push<void>(
             MaterialPageRoute(
               builder: (context) => ItemScreen(item: item)
             ),

@@ -14,7 +14,7 @@ class Person {
 
   Person(this.name);
 
-  factory Person.fromJson(Map json) => _$PersonFromJson(json);
+  factory Person.fromJson(Map<String, dynamic> json) => _$PersonFromJson(json);
   Map toJson() => _$PersonToJson(this);
 
   @override
@@ -70,8 +70,8 @@ class PersonController {
       final storage = await _storage();
       final peopleString = await storage.readAsString();
 
-      List peopleMaps = json.decode(peopleString);
-      List people = peopleMaps.map((p) => Person.fromJson(p)).toList();
+      final peopleMaps = json.decode(peopleString) as List<Map<String, dynamic>>;
+      final people = peopleMaps.map((p) => Person.fromJson(p)).toList();
       people.sort((a, b) => a.name.compareTo(b.name));
       _people = people;
     } catch (e) {

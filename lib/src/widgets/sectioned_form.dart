@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+typedef WidgetPadder = Widget Function(Widget);
+
 class FormSection extends StatelessWidget {
   final Widget body;
   final EdgeInsetsGeometry padding;
@@ -47,7 +49,7 @@ class FormSectionBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final padded = (widget) => Padding(
+    final WidgetPadder padded = (widget) => Padding(
       child: widget,
       padding: padding,
     );
