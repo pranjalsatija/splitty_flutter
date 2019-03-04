@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:splitty/src.dart';
 
-class ItemScreen extends StatelessWidget {
+class ItemScreen extends StatefulWidget {
   final Item item;
-
-  final _formKey = GlobalKey<ItemFormState>();
 
   ItemScreen({
     @required this.item,
   });
+
+  @override
+  _ItemScreenState createState() => _ItemScreenState();
+}
+
+class _ItemScreenState extends State<ItemScreen> {
+  final _formKey = GlobalKey<ItemFormState>();
 
   Widget _buildFloatingActionButton(BuildContext context, List<Person> people) {
     if (people == null || people.isEmpty) {
@@ -33,8 +38,8 @@ class ItemScreen extends StatelessWidget {
 
     if (snapshot.hasData) {
       return ItemForm(
-        item: item,
         key: _formKey,
+        item: widget.item,
         people: snapshot.data,
       );
     } else {
