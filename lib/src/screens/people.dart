@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:splitty/src.dart';
 
-class PeopleScreen extends StatefulWidget implements BottomNavigationBarScreen {
+class PeopleScreen extends StatelessWidget implements BottomNavigationBarScreen {
   BottomNavigationBarItem bottomNavigationBarItem(BuildContext context) {
     return BottomNavigationBarItem(
       icon: Icon(Icons.people),
@@ -9,48 +9,20 @@ class PeopleScreen extends StatefulWidget implements BottomNavigationBarScreen {
     );
   }
 
-  @override
-  State<StatefulWidget> createState() => _PeopleScreenState();
-}
+  void _addPerson(BuildContext context, String name) async {
+    final result = name ?? await _promptUserForName(context);
 
-class _PeopleScreenState extends State<PeopleScreen> {
-  Future<List<Person>> _peopleFuture;
-  List<Person> _people;
-
-  _PeopleScreenState() {
-    _peopleFuture = PersonController.allPeople();
-  }
-
-  void _addPerson(String name) async {
-    final result = name ?? await _promptUserForName();
     if (result != null && result.isNotEmpty) {
-      try {
-        await PersonController.create(result);
-
-        setState(() {
-          _peopleFuture = PersonController.allPeople();
-        });
-      } catch (e) {
-        showErrorSnackbar(context, e);
-      }
+      PersonController.add(Person(result));
     }
   }
 
-  void _deletePerson(Person person) async {
-    await PersonController.delete(person);
-    _showUndoDeleteSnackbar(person);
-
-    setState(() {
-      // This is necessary so that the Dismissible responsible for deleting the
-      // person is immediately removed from the widget tree. If this isn't done,
-      // it remains in the tree until PersonController.allPeople() completes,
-      // and that causes exceptions in debug builds.
-      _people.remove(person);
-      _peopleFuture = PersonController.allPeople();
-    });
+  void _deletePerson(BuildContext context, Person person) {
+    PersonController.remove(person);
+    _showUndoDeleteSnackbar(context, person);
   }
 
-  Future<String> _promptUserForName() {
+  Future<String> _promptUserForName(BuildContext context) {
     String textFieldContents;
 
     return showDialog(
@@ -79,69 +51,72 @@ class _PeopleScreenState extends State<PeopleScreen> {
     );
   }
 
-  void _showUndoDeleteSnackbar(Person person) {
+  void _showUndoDeleteSnackbar(BuildContext context, Person person) {
     final snackbar = SnackBar(
       content: Text(Strings.of(context).deletedPerson(person.name)),
       action: SnackBarAction(
         label: Strings.of(context).undo,
-        onPressed: () => _addPerson(person.name),
+        onPressed: () => _addPerson(context, person.name),
       ),
     );
 
     Scaffold.of(context).showSnackBar(snackbar);
   }
 
-  Widget _buildPersonListTile(Person person) {
-    return Dismissible(
-      key: Key(person.name),
-      child: ListTile(
-        contentPadding: EdgeInsets.only(left: 16, right: 0),
-        title: Text(person.name),
-      ),
-      onDismissed: (_) {
-        _deletePerson(person);
+  Widget _buildPeopleList(BuildContext context, List<Person> people) {
+    if (people.isEmpty) {
+      return ListViewEmptyState(
+        actionText: Strings.of(context).addPersonPrompt,
+        message: Strings.of(context).addPersonMessage,
+        onPressed: () => _addPerson(context, null),
+      );
+    }
+
+    return ListView.separated(
+      itemCount: people.length,
+      itemBuilder: (context, index) {
+        final person = people[index];
+
+        return Dismissible(
+          key: Key(person.name),
+          child: ListTile(
+            contentPadding: EdgeInsets.only(left: 16, right: 0),
+            title: Text(person.name),
+          ),
+          onDismissed: (_) {
+            _deletePerson(context, person);
+          },
+        );
       },
+      separatorBuilder: (context, index) => Divider(height: 1.0),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    PersonController.push();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(Strings.of(context).people),
       ),
-      body: SimpleFutureBuilder<List<Person>>(
-        future: _peopleFuture,
-        cachedData: _people,
-        cacheSaver: (people) => _people = people,
-        loadingWidgetBuilder: (context) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        },
-        finishedWidgetBuilder: (context, people, error) {
-          if (error != null) {
-            showErrorSnackbar(context, error);
+      body: StreamBuilder<List<Person>>(
+        stream: PersonController.stream,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            showErrorSnackbar(context, snapshot.error);
           }
 
-          if (people == null || people.isEmpty) {
-            return ListViewEmptyState(
-              actionText: Strings.of(context).addPersonPrompt,
-              message: Strings.of(context).addPersonMessage,
-              onPressed: () => _addPerson(null),
-            );
+          if (snapshot.hasData) {
+            return _buildPeopleList(context, snapshot.data);
           } else {
-            return ListView.separated(
-              itemCount: people.length,
-              itemBuilder: (context, index) => _buildPersonListTile(people[index]),
-              separatorBuilder: (context, index) => Divider(height: 1.0),
-            );
+            return ExpandedLoadingIndicator();
           }
         },
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.person_add),
-        onPressed: () => _addPerson(null),
+        onPressed: () => _addPerson(context, null),
       ),
     );
   }

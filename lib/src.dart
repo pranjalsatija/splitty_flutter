@@ -19,6 +19,7 @@ export 'package:splitty/src/utilities/hash.dart';
 export 'package:splitty/src/utilities/keyboard.dart';
 
 // widgets
+export 'package:splitty/src/widgets/expanded_loading_indicator.dart';
 export 'package:splitty/src/widgets/item_form.dart';
 export 'package:splitty/src/widgets/list_view_empty_state.dart';
 export 'package:splitty/src/widgets/multi_select_form_field.dart';

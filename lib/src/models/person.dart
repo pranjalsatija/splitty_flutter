@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -30,6 +31,55 @@ class Person {
 }
 
 class PersonController {
+  static Stream<List<Person>> get stream => _streamController.stream.map((people) {
+    people.sort((a, b) => a.name.compareTo(b.name));
+    return people;
+  });
+
+  static final StreamController<List<Person>> _streamController = StreamController.broadcast();
+  static List<Person> _people;
+
+  static void add(Person person) {
+    _loadFromStorageIfNecessary().then((_) {
+      _people.add(person);
+      _streamController.add(_people);
+      _synchronize();
+    });
+  }
+
+  static void remove(Person person) {
+    _loadFromStorageIfNecessary().then((_) {
+      _people.remove(person);
+      _streamController.add(_people);
+      _synchronize();
+    });
+  }
+
+  static void push() {
+    _loadFromStorageIfNecessary().then((_) {
+      _streamController.add(_people);
+    });
+  }
+
+  static Future<void> _loadFromStorageIfNecessary() async {
+    if (_people != null) {
+      return;
+    }
+
+    try {
+      final storage = await _storage();
+      final peopleString = await storage.readAsString();
+
+      List peopleMaps = json.decode(peopleString);
+      List people = peopleMaps.map((p) => Person.fromJson(p)).toList();
+      people.sort((a, b) => a.name.compareTo(b.name));
+      _people = people;
+    } catch (e) {
+      _streamController.addError(e);
+      _people = List();
+    }
+  }
+
   static Future<File> _storage() async {
     final directory = await getApplicationDocumentsDirectory();
     final file = File(path.join(directory.path, 'people.json'));
@@ -42,43 +92,14 @@ class PersonController {
     }
   }
 
-
-  static Future<List<Person>> allPeople() async {
-    final storage = await _storage();
-    final peopleString = await storage.readAsString();
-
+  static void _synchronize() async {
     try {
-      List peopleMaps = json.decode(peopleString);
-      List people = peopleMaps.map((p) => Person.fromJson(p)).toList();
-      people.sort((a, b) => a.name.compareTo(b.name));
-      return people;
+      final peopleMaps = _people.map((p) => p.toJson()).toList();
+      final peopleMapsString = json.encode(peopleMaps);
+      final storage = await _storage();
+      await storage.writeAsString(peopleMapsString);
     } catch (e) {
-      return List();
+      _streamController.addError(e);
     }
-  }
-
-  static Future<void> create(String name) async {
-    final existingPeople = await allPeople();
-    if (existingPeople.indexWhere((p) => p.name == name) != -1) {
-      throw 'A person named $name already exists.';
-    }
-
-    existingPeople.add(Person(name));
-    final newPeopleMaps = existingPeople.map((p) => p.toJson()).toList();
-    final newPeopleJSON = json.encode(newPeopleMaps);
-
-    final storage = await _storage();
-    await storage.writeAsString(newPeopleJSON);
-  }
-
-  static Future<void> delete(Person person) async {
-    final existingPeople = await allPeople();
-    existingPeople.removeWhere((p) => p.name == person.name);
-
-    final newPeopleMaps = existingPeople.map((p) => p.toJson()).toList();
-    final newPeopleJSON = json.encode(newPeopleMaps);
-
-    final storage = await _storage();
-    await storage.writeAsString(newPeopleJSON);
   }
 }
