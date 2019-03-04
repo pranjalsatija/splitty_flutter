@@ -94,8 +94,6 @@ class PeopleScreen extends StatelessWidget implements BottomNavigationBarScreen 
 
   @override
   Widget build(BuildContext context) {
-    PersonController.push();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(Strings.of(context).people),
@@ -110,6 +108,7 @@ class PeopleScreen extends StatelessWidget implements BottomNavigationBarScreen 
           if (snapshot.hasData) {
             return _buildPeopleList(context, snapshot.data);
           } else {
+            PersonController.push();
             return ExpandedLoadingIndicator();
           }
         },

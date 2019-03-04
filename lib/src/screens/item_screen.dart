@@ -1,25 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:splitty/src.dart';
 
-class ItemScreen extends StatefulWidget {
+class ItemScreen extends StatelessWidget {
   final Item item;
+
+  final _formKey = GlobalKey<ItemFormState>();
 
   ItemScreen({
     @required this.item,
   });
 
-  @override
-  State<StatefulWidget> createState() => _ItemScreenState();
-}
-
-class _ItemScreenState extends State<ItemScreen> {
-  final _formKey = GlobalKey<ItemFormState>();
-
-  final _peopleFuture = PersonController.allPeople();
-  List<Person> _people;
-
-  Widget _buildFloatingActionButton() {
-    if (_people == null || _people.isEmpty) {
+  Widget _buildFloatingActionButton(BuildContext context, List<Person> people) {
+    if (people == null || people.isEmpty) {
       return null;
     } else {
       return FloatingActionButton(
@@ -34,29 +26,36 @@ class _ItemScreenState extends State<ItemScreen> {
     }
   }
 
+  Widget _buildBody(BuildContext context, AsyncSnapshot<List<Person>> snapshot) {
+    if (snapshot.hasError) {
+      showErrorSnackbar(context, snapshot.error);
+    }
+
+    if (snapshot.hasData) {
+      return ItemForm(
+        item: item,
+        key: _formKey,
+        people: snapshot.data,
+      );
+    } else {
+      PersonController.push();
+      return ExpandedLoadingIndicator();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(Strings.of(context).newItem),
-      ),
-      body: SimpleFutureBuilder<List<Person>>(
-        cacheSaver: (people) => _people = people,
-        future: _peopleFuture,
-        loadingWidgetBuilder: (context) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        },
-        finishedWidgetBuilder: (context, people, error) {
-          return ItemForm(
-            item: widget.item,
-            key: _formKey,
-            people: people,
-          );
-        },
-      ),
-      floatingActionButton: _buildFloatingActionButton(),
+    return StreamBuilder<List<Person>>(
+      stream: PersonController.stream,
+      builder: (context, snapshot) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(Strings.of(context).newItem),
+          ),
+          body: _buildBody(context, snapshot),
+          floatingActionButton: _buildFloatingActionButton(context, snapshot.data),
+        );
+      },
     );
   }
 }
