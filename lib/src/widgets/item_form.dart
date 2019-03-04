@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:splitty/src.dart';
+import 'package:splitty/splitty.dart';
 
 class ItemForm extends StatefulWidget {
   final Item item;

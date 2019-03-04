@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
-import 'package:splitty/src.dart';
+import 'package:splitty/splitty.dart';
 
 part 'split.g.dart';
 
