@@ -26,7 +26,7 @@ class ListViewEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = [
+    final children = <Widget>[
       Text(
         message,
         textAlign: TextAlign.center,

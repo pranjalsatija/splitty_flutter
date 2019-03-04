@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:splitty/assets/strings.dart';
-import 'package:splitty/models/_index.dart';
-import 'package:splitty/utilities/_index.dart';
-import 'package:splitty/widgets/_index.dart';
+import 'package:splitty/src.dart';
 
 class ItemForm extends StatefulWidget {
   final Item item;
@@ -53,7 +50,7 @@ class ItemFormState extends State<ItemForm> {
   bool validate() => _formKey.currentState.validate();
 
   void _reformatPrice() {
-    String text = _priceTextFieldController.text;
+    final text = _priceTextFieldController.text;
     _priceTextFieldController.text = ItemPriceInputFormatter.reformat(text, includeCurrencySymbol: false);
   }
 
@@ -97,7 +94,7 @@ class ItemFormState extends State<ItemForm> {
 
   Widget _buildPeopleSectionBody(BuildContext context) {
     final initialValue = List.filled(widget.people.length, false);
-    for (int i = 0; i < widget.people.length; i++) {
+    for (var i = 0; i < widget.people.length; i++) {
       if (widget.item.people.contains(widget.people[i])) {
         initialValue[i] = true;
       }

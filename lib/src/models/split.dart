@@ -1,10 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
-import 'package:splitty/models/_index.dart';
+import 'package:splitty/src.dart';
 
+part 'split.g.dart';
+
+@JsonSerializable()
 class Split {
   List<Item> items;
   String name;
@@ -12,15 +16,8 @@ class Split {
 
   Split({this.items, this.name, this.path});
 
-  Split.fromJSON(Map json) {
-    name = json['name'];
-    items = (json['items'] as List).map((d) => Item.fromJSON(d)).toList();
-  }
-
-  Map toJSON() => {
-    'name': this.name,
-    'items': this.items.map((i) => i.toJSON()).toList(),
-  };
+  factory Split.fromJson(Map json) => _$SplitFromJson(json);
+  Map toJson() => _$SplitToJson(this);
 }
 
 class SplitController {
@@ -42,7 +39,7 @@ class SplitController {
 
     try {
       Map currentSplitJSON = json.decode(currentSplitString);
-      final split = Split.fromJSON(currentSplitJSON);
+      final split = Split.fromJson(currentSplitJSON);
       split.path = currentSplitStorage.path;
       return split;
     } catch(e) {
@@ -60,7 +57,7 @@ class SplitController {
   }) async {
     split.items.add(item);
     final file = File(split.path);
-    await file.writeAsString(json.encode(split.toJSON()));
+    await file.writeAsString(json.encode(split.toJson()));
     return split;
   }
 
@@ -70,7 +67,7 @@ class SplitController {
   }) async {
     split.items.remove(item);
     final file = File(split.path);
-    await file.writeAsString(json.encode(split.toJSON()));
+    await file.writeAsString(json.encode(split.toJson()));
     return split;
   }
 }

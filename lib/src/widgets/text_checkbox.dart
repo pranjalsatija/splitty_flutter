@@ -21,7 +21,7 @@ class TextCheckbox extends StatelessWidget {
           onChanged: onChanged,
           value: value,
         ),
-        Text(this.text,
+        Text(text,
           style: TextStyle(
             fontWeight: value ? FontWeight.bold : FontWeight.normal
           ),

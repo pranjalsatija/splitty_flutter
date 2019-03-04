@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:splitty/assets/strings.dart';
-import 'package:splitty/models/_index.dart';
-import 'package:splitty/screens/item_screen.dart';
-import 'package:splitty/widgets/_index.dart';
+import 'package:splitty/src.dart';
 
 import 'main_tab.dart';
 
@@ -27,7 +24,7 @@ class _NewSplitScreenState extends State<NewSplitScreen> {
   }
 
   void _addItem(Item item) async {
-    final Item newItem = item ?? await Navigator.of(context).push(
+    final newItem = item ?? await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => ItemScreen(
           item: Item(),
@@ -122,17 +119,9 @@ class _NewSplitScreenState extends State<NewSplitScreen> {
           }
         },
       ),
-      floatingActionButton: Column(
-        children: <Widget>[
-          FloatingActionButton(
-            child: Icon(Icons.add),
-            onPressed: () => _addItem(null),
-          ),
-          FloatingActionButton(
-            child: Icon(Icons.save),
-            onPressed: () => print('Save'),
-          )
-        ],
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => _addItem(null),
       ),
     );
   }

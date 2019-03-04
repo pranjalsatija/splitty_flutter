@@ -39,8 +39,8 @@ class _MultiSelectFormFieldBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = List();
-    this.widgets.take(this.widgets.length - 1).forEach((widget) {
+    final children = List<Widget>();
+    widgets.take(widgets.length - 1).forEach((widget) {
       children.add(widget);
       children.add(Divider(height: 1));
     });

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:splitty/models/_index.dart';
-import 'package:splitty/utilities/_index.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:splitty/src.dart';
 
+part 'item.g.dart';
+
+@JsonSerializable()
 class Item {
   String name;
   List<Person> people = List();
@@ -14,21 +17,11 @@ class Item {
 
   Item();
 
-  Item.fromJSON(Map json) {
-    this.name = json['name'];
-    this.price = json['price'];
-    this.people = (json['people'] as List).map((d) => Person.fromJSON(d)).toList();
-  }
-
-  Map toJSON() => {
-    'name': this.name,
-    'price': this.price,
-    'people': this.people.map((p) => p.toJSON()).toList(),
-  };
-
+  factory Item.fromJson(Map json) => _$ItemFromJson(json);
+  Map toJson() => _$ItemToJson(this);
 
   @override
-  bool operator ==(other) {
+  bool operator ==(Object other) {
     if (other is Item) {
       return other.name == name && other.price == price;
     } else {
@@ -64,7 +57,7 @@ class ItemPriceInputFormatter {
   }
 
   static String reformat(String text, {@required bool includeCurrencySymbol}) {
-    double parsedInput = parse(text);
+    final parsedInput = parse(text);
 
     if (parsedInput != null && includeCurrencySymbol) {
       return NumberFormat.currency(symbol: '').format(parsedInput);
