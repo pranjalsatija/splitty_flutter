@@ -60,7 +60,7 @@ class ItemPriceInputFormatter {
   static String reformat(String text, {@required bool includeCurrencySymbol}) {
     final parsedInput = parse(text);
 
-    if (parsedInput != null && includeCurrencySymbol) {
+    if (parsedInput != null && !includeCurrencySymbol) {
       return NumberFormat.currency(symbol: '').format(parsedInput);
     } else if (parsedInput != null) {
       return NumberFormat.simpleCurrency().format(parsedInput);

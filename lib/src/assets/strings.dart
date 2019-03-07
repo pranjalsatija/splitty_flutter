@@ -49,7 +49,11 @@ class Strings {
   String get noSelectedPeople => string('noSelectedPeople');
   String get people => string('people');
   String get personName => string('personName');
+  String get saveSplitInstructions => string('saveSplitInstructions');
+  String get saveSplitPrompt => string('saveSplitPrompt');
+  String get saveSplit => string('saveSplit');
   String get selectAll => string('selectAll');
+  String get splitName => string('splitName');
   String get undo => string('undo');
 }
 

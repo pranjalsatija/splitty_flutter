@@ -41,9 +41,11 @@ class PersonController {
 
   static void add(Person person) {
     _loadFromStorageIfNecessary().then((_) {
-      _people.add(person);
-      _streamController.add(_people);
-      _synchronize();
+      if (!_people.contains(person)) {
+        _people.add(person);
+        _streamController.add(_people);
+        _synchronize();
+      }
     });
   }
 
@@ -70,7 +72,8 @@ class PersonController {
       final storage = await _storage();
       final peopleString = await storage.readAsString();
 
-      final peopleMaps = json.decode(peopleString) as List<Map<String, dynamic>>;
+      final peopleBlobs = json.decode(peopleString) as List<dynamic>;
+      final peopleMaps = peopleBlobs.map((dynamic p) => p as Map<String, dynamic>).toList();
       final people = peopleMaps.map((p) => Person.fromJson(p)).toList();
       people.sort((a, b) => a.name.compareTo(b.name));
       _people = people;
@@ -98,7 +101,9 @@ class PersonController {
       final peopleMapsString = json.encode(peopleMaps);
       final storage = await _storage();
       await storage.writeAsString(peopleMapsString);
+      print('Wrote to storage');
     } catch (e) {
+      print('Caught error: $e');
       _streamController.addError(e);
     }
   }

@@ -28,6 +28,24 @@ class Split {
 
   factory Split.fromJson(Map<String, dynamic> json) => _$SplitFromJson(json);
   Map toJson() => _$SplitToJson(this);
+
+  Map<Person, double> totalsPerPerson() {
+    final map = Map<Person, double>();
+
+    for (final item in items) {
+      final personalContribution = item.price / item.people.length;
+
+      for (final person in item.people) {
+        if (map.containsKey(person)) {
+          map[person] += personalContribution;
+        } else {
+          map[person] = personalContribution;
+        }
+      }
+    }
+
+    return map;
+  }
 }
 
 class SplitController {

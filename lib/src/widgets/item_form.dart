@@ -83,7 +83,7 @@ class ItemFormState extends State<ItemForm> {
             prefix: Text(ItemPriceInputFormatter.currencySymbol),
           ),
           focusNode: _priceTextFieldFocusNode,
-          keyboardType: TextInputType.number,
+          keyboardType: TextInputType.numberWithOptions(decimal: true),
           onFieldSubmitted: (_) => Keyboard.of(context).dismiss(),
           onSaved: (text) => widget.item.price = ItemPriceInputFormatter.parse(text),
           validator: (input) => ItemPriceInputFormatter.validate(input) ? null : Strings.of(context).invalidPrice,

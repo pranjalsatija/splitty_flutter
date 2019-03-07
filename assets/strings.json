@@ -59,8 +59,20 @@
   "personName": {
     "en": "Person's Name"
   },
+  "saveSplit": {
+    "en": "Save Split"
+  },
+  "saveSplitInstructions": {
+    "en": "Enter a name for this split. The date will be saved automatically."
+  },
+  "saveSplitPrompt": {
+    "en": "Save Split"
+  },
   "selectAll": {
     "en": "Select All"
+  },
+  "splitName": {
+    "en": "Split Name"
   },
   "undo": {
     "en": "Undo"

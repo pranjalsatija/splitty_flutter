@@ -30,6 +30,51 @@ class NewSplitScreen extends StatelessWidget implements BottomNavigationBarScree
     SplitController.removeItemFromCurrentSplit(item);
   }
 
+  Future<String> _promptUserForListTitle(BuildContext context) async {
+    String textFieldContents;
+
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(Strings.of(context).saveSplitPrompt),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                Strings.of(context).saveSplitInstructions,
+                style: Theme.of(context).textTheme.caption,
+              ),
+              TextField(
+                autofocus: true,
+                decoration: InputDecoration(
+                  isDense: true,
+                  labelText: Strings.of(context).splitName,
+                ),
+                onChanged: (value) => textFieldContents = value,
+                onSubmitted: (_) => Navigator.pop(context, textFieldContents),
+                textCapitalization: TextCapitalization.words,
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () => Navigator.pop(context, textFieldContents),
+              child: Text(Strings.of(context).done),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _saveList(BuildContext context) async {
+    final listTitle = await _promptUserForListTitle(context);
+    if (listTitle != null && listTitle.isNotEmpty) {
+      print('Save with $listTitle.');
+    }
+  }
+
   void _showUndoDeleteSnackbar(BuildContext context, Item item) {
     final snackbar = SnackBar(
       content: Text(Strings.of(context).deletedItem(item.name)),
@@ -42,6 +87,37 @@ class NewSplitScreen extends StatelessWidget implements BottomNavigationBarScree
     Scaffold.of(context).showSnackBar(snackbar);
   }
 
+  Widget _buildFooter(BuildContext context, Split split) {
+    final widgets = split.totalsPerPerson().map<Person, Widget>((person, amount) {
+      final formattedAmount = ItemPriceInputFormatter.format(amount, includeCurrencySymbol: true);
+      final formattedDisplay = '${person.name} - $formattedAmount';
+      final textWidget = Text(
+        formattedDisplay,
+        style: TextStyle(
+          fontWeight: FontWeight.bold
+        ),
+      );
+
+      return MapEntry(person, textWidget);
+    }).values.toList();
+
+    widgets.add(
+      RaisedButton(
+        child: Text(Strings.of(context).saveSplit),
+        color: Theme.of(context).primaryColor,
+        onPressed: () => _saveList(context),
+        textColor: Colors.white,
+      ),
+    );
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: widgets,
+      ),
+    );
+  }
+
   Widget _buildSplitList(BuildContext context, Split split) {
     if (split.items.isEmpty) {
       return ListViewEmptyState(
@@ -52,8 +128,12 @@ class NewSplitScreen extends StatelessWidget implements BottomNavigationBarScree
     }
 
     return ListView.separated(
-      itemCount: split.items.length,
+      itemCount: split.items.length + 1,
       itemBuilder: (context, index) {
+        if (index >= split.items.length) {
+          return _buildFooter(context, split);
+        }
+
         final item = split.items[index];
 
         return Dismissible(
