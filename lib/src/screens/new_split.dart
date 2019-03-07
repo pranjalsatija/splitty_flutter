@@ -3,7 +3,7 @@ import 'package:splitty/splitty.dart';
 
 import 'main_tab.dart';
 
-class NewSplitScreen extends StatefulWidget implements BottomNavigationBarScreen {
+class NewSplitScreen extends StatelessWidget implements BottomNavigationBarScreen {
   BottomNavigationBarItem bottomNavigationBarItem(BuildContext context) {
     return BottomNavigationBarItem(
       icon: Icon(Icons.add),
@@ -11,19 +11,7 @@ class NewSplitScreen extends StatefulWidget implements BottomNavigationBarScreen
     );
   }
 
-  @override
-  State<StatefulWidget> createState() => _NewSplitScreenState();
-}
-
-class _NewSplitScreenState extends State<NewSplitScreen> {
-  Future<Split> _currentSplitFuture;
-  Split _currentSplit;
-
-  _NewSplitScreenState() {
-    _currentSplitFuture = SplitController.currentSplit();
-  }
-
-  void _addItem(Item item) async {
+  void _addItem(BuildContext context, Item item) async {
     final newItem = item ?? await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => ItemScreen(
@@ -33,58 +21,58 @@ class _NewSplitScreenState extends State<NewSplitScreen> {
     );
 
     if (newItem != null) {
-      setState(() {
-        _currentSplitFuture = SplitController.addItem(
-          item: newItem,
-          split: _currentSplit,
-        );
-      });
+      SplitController.addItemToCurrentSplit(newItem);
     }
   }
 
-  void _deleteItem(Item item) async {
-    _showUndoDeleteSnackbar(item);
-
-    setState(() {
-      // This is necessary so that the Dismissible responsible for deleting the
-      // person is immediately removed from the widget tree. If this isn't done,
-      // it remains in the tree until SplitController.deleteItem() completes,
-      // and that causes exceptions in debug builds.
-      _currentSplit.items.remove(item);
-      _currentSplitFuture = SplitController.deleteItem(
-        item: item,
-        split: _currentSplit,
-      );
-    });
+  void _deleteItem(BuildContext context, Item item) async {
+    _showUndoDeleteSnackbar(context, item);
+    SplitController.removeItemFromCurrentSplit(item);
   }
 
-  void _showUndoDeleteSnackbar(Item item) {
+  void _showUndoDeleteSnackbar(BuildContext context, Item item) {
     final snackbar = SnackBar(
       content: Text(Strings.of(context).deletedItem(item.name)),
       action: SnackBarAction(
         label: Strings.of(context).undo,
-        onPressed: () => _addItem(item),
+        onPressed: () => _addItem(context, item),
       ),
     );
 
     Scaffold.of(context).showSnackBar(snackbar);
   }
 
-  Widget _buildItemListTile(Item item) {
-    return Dismissible(
-      child: ListTile(
-        title: Text(item.name),
-        subtitle: Text(item.formattedDescription),
-        onTap: () {
-          Navigator.of(context).push<void>(
-            MaterialPageRoute(
-              builder: (context) => ItemScreen(item: item)
-            ),
-          );
-        },
-      ),
-      key: Key(item.name),
-      onDismissed: (_) => _deleteItem(item),
+  Widget _buildSplitList(BuildContext context, Split split) {
+    if (split.items.isEmpty) {
+      return ListViewEmptyState(
+        actionText: Strings.of(context).addItemPrompt,
+        message: Strings.of(context).addItemMessage,
+        onPressed: () => _addItem(context, null),
+      );
+    }
+
+    return ListView.separated(
+      itemCount: split.items.length,
+      itemBuilder: (context, index) {
+        final item = split.items[index];
+
+        return Dismissible(
+          child: ListTile(
+            title: Text(item.name),
+            subtitle: Text(item.formattedDescription),
+            onTap: () {
+              Navigator.of(context).push<void>(
+                MaterialPageRoute(
+                    builder: (context) => ItemScreen(item: item)
+                ),
+              );
+            },
+          ),
+          key: Key(item.name),
+          onDismissed: (_) => _deleteItem(context, item),
+        );
+      },
+      separatorBuilder: (context, index) => Divider(height: 1),
     );
   }
 
@@ -94,34 +82,24 @@ class _NewSplitScreenState extends State<NewSplitScreen> {
       appBar: AppBar(
         title: Text(Strings.of(context).newSplit),
       ),
-      body: SimpleFutureBuilder<Split>(
-        future: _currentSplitFuture,
-        cachedData: _currentSplit,
-        cacheSaver: (currentSplit) => _currentSplit = currentSplit,
-        loadingWidgetBuilder: (context) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        },
-        finishedWidgetBuilder: (context, currentSplit, error) {
-          if (currentSplit == null || currentSplit.items.isEmpty) {
-            return ListViewEmptyState(
-              actionText: Strings.of(context).addItemPrompt,
-              message: Strings.of(context).addItemMessage,
-              onPressed: () => _addItem(null),
-            );
+      body: StreamBuilder<Split>(
+        stream: SplitController.currentSplitStream,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            showErrorSnackbar(context, snapshot.error);
+          }
+
+          if (snapshot.hasData) {
+            return _buildSplitList(context, snapshot.data);
           } else {
-            return ListView.separated(
-              itemCount: currentSplit.items.length,
-              itemBuilder: (context, index) => _buildItemListTile(currentSplit.items[index]),
-              separatorBuilder: (context, index) => Divider(height: 1.0),
-            );
+            SplitController.push();
+            return ExpandedLoadingIndicator();
           }
         },
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () => _addItem(null),
+        onPressed: () => _addItem(context, null),
       ),
     );
   }

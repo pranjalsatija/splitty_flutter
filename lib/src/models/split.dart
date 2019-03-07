@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -7,6 +8,15 @@ import 'package:path_provider/path_provider.dart';
 import 'package:splitty/splitty.dart';
 
 part 'split.g.dart';
+
+/*
+Target API:
+
+* SplitController.currentSplitStream gives you a stream to use to listen for changes to the current split.
+* SplitController.push works like PersonController.push.
+* SplitController.addItemToCurrentSplit lets you add an item to the current split. It emits a stream event.
+* SplitController.removeItemFromCurrentSplit lets you remove an item from the current split. It emits a stream event.
+ */
 
 @JsonSerializable()
 class Split {
@@ -21,6 +31,33 @@ class Split {
 }
 
 class SplitController {
+  static Stream<Split> get currentSplitStream => _streamController.stream;
+
+  static final StreamController<Split> _streamController = StreamController.broadcast();
+  static Split _split;
+
+  static void addItemToCurrentSplit(Item item) {
+    _loadCurrentSplitFromStorageIfNecessary().then((_) {
+      _split.items.add(item);
+      _streamController.add(_split);
+      _synchronizeCurrentSplit();
+    });
+  }
+
+  static void removeItemFromCurrentSplit(Item item) {
+    _loadCurrentSplitFromStorageIfNecessary().then((_) {
+      _split.items.remove(item);
+      _streamController.add(_split);
+      _synchronizeCurrentSplit();
+    });
+  }
+
+  static void push() {
+    _loadCurrentSplitFromStorageIfNecessary().then((_) {
+      _streamController.add(_split);
+    });
+  }
+
   static Future<File> _currentSplitStorage() async {
     final directory = await getApplicationDocumentsDirectory();
     final file = File(path.join(directory.path, 'current_split.json'));
@@ -33,17 +70,21 @@ class SplitController {
     }
   }
 
-  static Future<Split> currentSplit() async {
+  static Future<void> _loadCurrentSplitFromStorageIfNecessary() async {
+    if (_split != null) {
+      return;
+    }
+
     final currentSplitStorage = await _currentSplitStorage();
     final currentSplitString = await currentSplitStorage.readAsString();
 
     try {
       final currentSplitJSON = json.decode(currentSplitString) as Map<String, dynamic>;
-      final split = Split.fromJson(currentSplitJSON);
-      split.path = currentSplitStorage.path;
-      return split;
+      _split = Split.fromJson(currentSplitJSON);
+      _split.path = currentSplitStorage.path;
     } catch(e) {
-      return Split(
+      _streamController.addError(e);
+      _split = Split(
         items: [],
         name: null,
         path: currentSplitStorage.path,
@@ -51,23 +92,12 @@ class SplitController {
     }
   }
 
-  static Future<Split> addItem({
-    Split split,
-    Item item,
-  }) async {
-    split.items.add(item);
-    final file = File(split.path);
-    await file.writeAsString(json.encode(split.toJson()));
-    return split;
-  }
-
-  static Future<Split> deleteItem({
-    Split split,
-    Item item,
-  }) async {
-    split.items.remove(item);
-    final file = File(split.path);
-    await file.writeAsString(json.encode(split.toJson()));
-    return split;
+  static void _synchronizeCurrentSplit() async {
+    try {
+      final storage = await _currentSplitStorage();
+      await storage.writeAsString(json.encode(_split.toJson()));
+    } catch (e) {
+      _streamController.addError(e);
+    }
   }
 }
