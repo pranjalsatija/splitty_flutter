@@ -68,6 +68,9 @@
   "saveSplitPrompt": {
     "en": "Save Split"
   },
+  "savedSplit": {
+    "en": "Saved %s."
+  },
   "selectAll": {
     "en": "Select All"
   },

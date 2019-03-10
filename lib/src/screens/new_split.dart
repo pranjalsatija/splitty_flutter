@@ -71,7 +71,13 @@ class NewSplitScreen extends StatelessWidget implements BottomNavigationBarScree
   void _saveList(BuildContext context) async {
     final listTitle = await _promptUserForListTitle(context);
     if (listTitle != null && listTitle.isNotEmpty) {
-      print('Save with $listTitle.');
+      SplitController.saveCurrentSplit(listTitle);
+
+      final snackbar = SnackBar(
+        content: Text(Strings.of(context).savedSplit(listTitle)),
+      );
+      
+      Scaffold.of(context).showSnackBar(snackbar);
     }
   }
 
@@ -172,7 +178,7 @@ class NewSplitScreen extends StatelessWidget implements BottomNavigationBarScree
           if (snapshot.hasData) {
             return _buildSplitList(context, snapshot.data);
           } else {
-            SplitController.push();
+            SplitController.pushCurrentSplit();
             return ExpandedLoadingIndicator();
           }
         },

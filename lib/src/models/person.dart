@@ -101,9 +101,7 @@ class PersonController {
       final peopleMapsString = json.encode(peopleMaps);
       final storage = await _storage();
       await storage.writeAsString(peopleMapsString);
-      print('Wrote to storage');
     } catch (e) {
-      print('Caught error: $e');
       _streamController.addError(e);
     }
   }
