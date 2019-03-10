@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
@@ -20,8 +21,19 @@ Target API:
 
 @JsonSerializable()
 class Split {
+  DateTime date;
   List<Item> items;
   String name;
+
+  String get formattedDate {
+    final formatter = DateFormat.yMMMMd();
+
+    if (date != null) {
+      return formatter.format(date);
+    } else {
+      return formatter.format(DateTime.fromMillisecondsSinceEpoch(0));
+    }
+  }
 
   Split({this.items, this.name});
 
@@ -49,7 +61,11 @@ class Split {
 
 class SplitController {
   static Stream<Split> get currentSplitStream => _currentSplitStreamController.stream;
-  static Stream<List<Split>> get allSplitsStream => _allSplitsStreamController.stream;
+  static Stream<List<Split>> get allSplitsStream => _allSplitsStreamController.stream.map((splits) {
+    splits.where((s) => s.date == null).forEach((s) => s.date = DateTime.fromMillisecondsSinceEpoch(0));
+    splits.sort((a, b) => b.date.compareTo(a.date));
+    return splits;
+  });
 
   static List<Split> _allSplits;
   static Split _currentSplit;
@@ -86,7 +102,9 @@ class SplitController {
   }
 
   static void saveCurrentSplit(String name) {
+    _currentSplit.date = DateTime.now();
     _currentSplit.name = name;
+
     _loadAllSplitsFromStorageIfNecessary().then((_) {
       _allSplits.add(_currentSplit);
       _allSplitsStreamController.add(_allSplits);
