@@ -25,15 +25,7 @@ class Split {
   List<Item> items;
   String name;
 
-  String get formattedDate {
-    final formatter = DateFormat.yMMMMd();
-
-    if (date != null) {
-      return formatter.format(date);
-    } else {
-      return formatter.format(DateTime.fromMillisecondsSinceEpoch(0));
-    }
-  }
+  String get formattedDate => DateFormat.yMMMMd().format(DateTime.fromMillisecondsSinceEpoch(0));
 
   Split({this.items, this.name});
 
@@ -62,7 +54,6 @@ class Split {
 class SplitController {
   static Stream<Split> get currentSplitStream => _currentSplitStreamController.stream;
   static Stream<List<Split>> get allSplitsStream => _allSplitsStreamController.stream.map((splits) {
-    splits.where((s) => s.date == null).forEach((s) => s.date = DateTime.fromMillisecondsSinceEpoch(0));
     splits.sort((a, b) => b.date.compareTo(a.date));
     return splits;
   });
@@ -160,7 +151,7 @@ class SplitController {
       final allSplitMaps = allSplitBlobs.map((dynamic b) => b as Map<String, dynamic>).toList();
       _allSplits = allSplitMaps.map((s) => Split.fromJson(s)).toList();
     } catch (e) {
-      // TODO: do something with the error; do we send it to the current split stream, or the all splits stream?
+      _allSplitsStreamController.addError(e);
       _allSplits = [];
     }
   }
