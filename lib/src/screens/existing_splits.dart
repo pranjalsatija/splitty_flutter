@@ -9,6 +9,17 @@ class ExistingSplitsScreen extends StatelessWidget implements BottomNavigationBa
     );
   }
 
+  void _presentSplitDetail(BuildContext context, Split split) {
+    Navigator.of(context).push<void>(
+      MaterialPageRoute(
+        builder: (context) => SplitDetailScreen(
+          pushHandler: () {},
+          splitStream: SingleValueStream(split).backingStream,
+        ),
+      ),
+    );
+  }
+
   Widget _buildBody(BuildContext context, List<Split> splits) {
     return ListView.separated(
       itemCount: splits.length,
@@ -16,7 +27,7 @@ class ExistingSplitsScreen extends StatelessWidget implements BottomNavigationBa
         return ListTile(
           title: Text(splits[index].name),
           subtitle: Text(splits[index].formattedDate),
-          onTap: null,
+          onTap: () => _presentSplitDetail(context, splits[index]),
         );
       },
       separatorBuilder: (context, index) => Divider(height: 1),

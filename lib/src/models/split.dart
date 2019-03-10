@@ -10,22 +10,13 @@ import 'package:splitty/splitty.dart';
 
 part 'split.g.dart';
 
-/*
-Target API:
-
-* SplitController.currentSplitStream gives you a stream to use to listen for changes to the current split.
-* SplitController.push works like PersonController.push.
-* SplitController.addItemToCurrentSplit lets you add an item to the current split. It emits a stream event.
-* SplitController.removeItemFromCurrentSplit lets you remove an item from the current split. It emits a stream event.
- */
-
 @JsonSerializable()
 class Split {
   DateTime date;
   List<Item> items;
   String name;
 
-  String get formattedDate => DateFormat.yMMMMd().format(DateTime.fromMillisecondsSinceEpoch(0));
+  String get formattedDate => DateFormat.yMMMMd().format(date);
 
   Split({this.items, this.name});
 

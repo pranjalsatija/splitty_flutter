@@ -10,12 +10,13 @@ export 'package:splitty/src/models/split.dart';
 export 'package:splitty/src/screens/existing_splits.dart';
 export 'package:splitty/src/screens/item_screen.dart';
 export 'package:splitty/src/screens/main_tab.dart';
-export 'package:splitty/src/screens/new_split.dart';
 export 'package:splitty/src/screens/people.dart';
+export 'package:splitty/src/screens/split_detail.dart';
 
 // utilities
 export 'package:splitty/src/utilities/errors.dart';
 export 'package:splitty/src/utilities/keyboard.dart';
+export 'package:splitty/src/utilities/single_value_stream.dart';
 
 // widgets
 export 'package:splitty/src/widgets/expanded_loading_indicator.dart';

@@ -3,7 +3,15 @@ import 'package:splitty/splitty.dart';
 
 import 'main_tab.dart';
 
-class NewSplitScreen extends StatelessWidget implements BottomNavigationBarScreen {
+class SplitDetailScreen extends StatelessWidget implements BottomNavigationBarScreen {
+  final VoidCallback pushHandler;
+  final Stream<Split> splitStream;
+
+  SplitDetailScreen({
+    @required this.pushHandler,
+    @required this.splitStream,
+  });
+
   BottomNavigationBarItem bottomNavigationBarItem(BuildContext context) {
     return BottomNavigationBarItem(
       icon: Icon(Icons.add),
@@ -170,7 +178,7 @@ class NewSplitScreen extends StatelessWidget implements BottomNavigationBarScree
         title: Text(Strings.of(context).newSplit),
       ),
       body: StreamBuilder<Split>(
-        stream: SplitController.currentSplitStream,
+        stream: splitStream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             showErrorSnackbar(context, snapshot.error);
@@ -179,7 +187,7 @@ class NewSplitScreen extends StatelessWidget implements BottomNavigationBarScree
           if (snapshot.hasData) {
             return _buildSplitList(context, snapshot.data);
           } else {
-            SplitController.pushCurrentSplit();
+            pushHandler();
             return ExpandedLoadingIndicator();
           }
         },

@@ -15,7 +15,10 @@ class MainTabScreen extends StatefulWidget {
 class _MainTabScreenState extends State<MainTabScreen> {
   int _selectedIndex = 0;
   List<BottomNavigationBarScreen> _tabs = [
-    NewSplitScreen(),
+    SplitDetailScreen(
+      splitStream: SplitController.currentSplitStream,
+      pushHandler: SplitController.pushCurrentSplit,
+    ),
     ExistingSplitsScreen(),
     PeopleScreen(),
   ];
