@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:splitty/splitty.dart';
 
+enum ItemScreenMode {
+  newItem, editItem, viewItem
+}
+
 class ItemScreen extends StatefulWidget {
   final Item item;
+  final ItemScreenMode mode;
 
   ItemScreen({
     @required this.item,
+    @required this.mode,
   });
 
   @override
@@ -16,7 +22,7 @@ class _ItemScreenState extends State<ItemScreen> {
   final _formKey = GlobalKey<ItemFormState>();
 
   Widget _buildFloatingActionButton(BuildContext context, List<Person> people) {
-    if (people == null || people.isEmpty) {
+    if (people == null || people.isEmpty || widget.mode == ItemScreenMode.viewItem) {
       return null;
     } else {
       return FloatingActionButton(
@@ -50,12 +56,26 @@ class _ItemScreenState extends State<ItemScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String title;
+
+    switch (widget.mode) {
+      case ItemScreenMode.newItem:
+        title = Strings.of(context).newItem;
+        break;
+      case ItemScreenMode.editItem:
+        title = Strings.of(context).editItem;
+        break;
+      case ItemScreenMode.viewItem:
+        title = Strings.of(context).viewItem;
+        break;
+    }
+
     return StreamBuilder<List<Person>>(
       stream: PersonController.stream,
       builder: (context, snapshot) {
         return Scaffold(
           appBar: AppBar(
-            title: Text(Strings.of(context).newItem),
+            title: Text(title),
           ),
           body: _buildBody(context, snapshot),
           floatingActionButton: _buildFloatingActionButton(context, snapshot.data),

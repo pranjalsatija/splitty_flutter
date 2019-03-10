@@ -16,6 +16,7 @@ class NewSplitScreen extends StatelessWidget implements BottomNavigationBarScree
       MaterialPageRoute(
         builder: (_) => ItemScreen(
           item: Item(),
+          mode: ItemScreenMode.newItem,
         ),
       ),
     );
@@ -149,7 +150,7 @@ class NewSplitScreen extends StatelessWidget implements BottomNavigationBarScree
             onTap: () {
               Navigator.of(context).push<void>(
                 MaterialPageRoute(
-                    builder: (context) => ItemScreen(item: item)
+                  builder: (context) => ItemScreen(item: item, mode: ItemScreenMode.editItem),
                 ),
               );
             },

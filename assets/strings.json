@@ -23,6 +23,9 @@
   "done": {
     "en": "Done"
   },
+  "editItem": {
+    "en": "Edit Item"
+  },
   "existingSplits": {
     "en": "Existing Splits"
   },
@@ -79,5 +82,8 @@
   },
   "undo": {
     "en": "Undo"
+  },
+  "viewItem": {
+    "en": "View Item"
   }
 }

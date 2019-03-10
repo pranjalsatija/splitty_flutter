@@ -37,6 +37,7 @@ class Strings {
   String deletedItem(String name) => interpolated('deletedItem', <String>[name]);
   String deletedPerson(String name) => interpolated('deletedPerson', <String>[name]);
   String get done => string('done');
+  String get editItem => string('editItem');
   String get existingSplits => string('existingSplits');
   String get invalidPrice => string('invalidPrice');
   String get itemInfo => string('itemInfo');
@@ -56,6 +57,7 @@ class Strings {
   String get selectAll => string('selectAll');
   String get splitName => string('splitName');
   String get undo => string('undo');
+  String get viewItem => string('viewItem');
 }
 
 class _StringStorage {
