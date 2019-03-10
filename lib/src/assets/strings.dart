@@ -48,6 +48,7 @@ class Strings {
   String get newSplit => string('newSplit');
   String get noPeople => string('noPeople');
   String get noSelectedPeople => string('noSelectedPeople');
+  String get noSplits => string('noSplits');
   String get people => string('people');
   String get personName => string('personName');
   String get saveSplitInstructions => string('saveSplitInstructions');

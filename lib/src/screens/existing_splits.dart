@@ -21,6 +21,12 @@ class ExistingSplitsScreen extends StatelessWidget implements BottomNavigationBa
   }
 
   Widget _buildBody(BuildContext context, List<Split> splits) {
+    if (splits == null || splits.isEmpty) {
+      return ListViewEmptyState(
+        message: Strings.of(context).noSplits,
+      );
+    }
+
     return ListView.separated(
       itemCount: splits.length,
       itemBuilder: (context, index) {

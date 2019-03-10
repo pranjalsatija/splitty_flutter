@@ -56,6 +56,9 @@
   "noSelectedPeople": {
     "en": "Please select one or more people to continue."
   },
+  "noSplits": {
+    "en": "You haven't made any splits! Go to the New Split tab, make a split, and save it. You'll be able to review it here."
+  },
   "people": {
     "en": "People"
   },
