@@ -1,0 +1,22 @@
+{
+  "en": [
+    {
+      "minLength": 1,
+      "maxLength": 1,
+      "separator": "",
+      "finalSeparator": ""
+    },
+    {
+      "minLength": 2,
+      "maxLength": 2,
+      "separator": "",
+      "finalSeparator": " and "
+    },
+    {
+      "minLength": 3,
+      "maxLength": 1000000000,
+      "separator": ", ",
+      "finalSeparator": ", and "
+    }
+  ]
+}

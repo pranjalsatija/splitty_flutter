@@ -16,6 +16,7 @@ class _MainTabScreenState extends State<MainTabScreen> {
   int _selectedIndex = 0;
   List<BottomNavigationBarScreen> _tabs = [
     SplitDetailScreen(
+      mode: SplitDetailScreenMode.readWrite,
       splitStream: SplitController.currentSplitStream,
       pushHandler: SplitController.pushCurrentSplit,
     ),

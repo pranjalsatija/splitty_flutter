@@ -12,8 +12,10 @@ class Item {
   List<Person> people = List();
   double price;
 
-  String get formattedDescription {
-    return '${ItemPriceInputFormatter.format(price, includeCurrencySymbol: true)}';
+  String formattedDescription(BuildContext context) {
+    final formattedPrice = ItemPriceInputFormatter.format(price, includeCurrencySymbol: true);
+    final formattedPeople = Strings.of(context).formattedPlurals(people);
+    return Strings.of(context).itemFormattedDescription(formattedPrice, formattedPeople);
   }
 
   Item();

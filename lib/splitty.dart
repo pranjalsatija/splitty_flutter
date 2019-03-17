@@ -1,4 +1,5 @@
 // assets
+export 'package:splitty/src/assets/plurals.dart';
 export 'package:splitty/src/assets/strings.dart';
 
 // models
@@ -25,4 +26,7 @@ export 'package:splitty/src/widgets/list_view_empty_state.dart';
 export 'package:splitty/src/widgets/multi_select_form_field.dart';
 export 'package:splitty/src/widgets/sectioned_form.dart';
 export 'package:splitty/src/widgets/simple_future_builder.dart';
+export 'package:splitty/src/widgets/strings_localization_delegate.dart';
+export 'package:splitty/src/widgets/split_footer.dart';
+export 'package:splitty/src/widgets/split_list.dart';
 export 'package:splitty/src/widgets/text_checkbox.dart';

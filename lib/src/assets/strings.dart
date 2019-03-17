@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:splitty/splitty.dart';
 
 class Strings {
   final Locale _locale;
@@ -24,6 +25,10 @@ class Strings {
     return s;
   }
 
+  String plural(List<Object> objects) {
+    return _storage.formatPlurals(objects, _locale);
+  }
+
   String string(String key) {
     return _storage.string(key, _locale);
   }
@@ -39,7 +44,9 @@ class Strings {
   String get done => string('done');
   String get editItem => string('editItem');
   String get existingSplits => string('existingSplits');
+  String formattedPlurals(List<Object> objects) => plural(objects);
   String get invalidPrice => string('invalidPrice');
+  String itemFormattedDescription(String price, String people) => interpolated('itemFormattedDescription', <String>[price, people]);
   String get itemInfo => string('itemInfo');
   String get itemName => string('itemName');
   String get itemPrice => string('itemPrice');
@@ -56,17 +63,26 @@ class Strings {
   String get saveSplit => string('saveSplit');
   String savedSplit(String name) => interpolated('savedSplit', <String>[name]);
   String get selectAll => string('selectAll');
+  String splitFormattedDisplay(String person, String amount) => interpolated('splitFormattedDisplay', <String>[person, amount]);
   String get splitName => string('splitName');
   String get undo => string('undo');
   String get viewItem => string('viewItem');
+  String get viewSplit => string('viewSplit');
 }
 
 class _StringStorage {
+  PluralFormatter _pluralFormatter;
   Map<String, dynamic> _strings;
 
   Future<void> load() async {
+    final pluralsJSON = await rootBundle.loadString('assets/plurals.json');
     final stringsJSON = await rootBundle.loadString('assets/strings.json');
+    _pluralFormatter = PluralFormatter(pluralsJSON);
     _strings = json.decode(stringsJSON) as Map<String, dynamic>;
+  }
+
+  String formatPlurals(List<Object> objects, Locale locale) {
+    return _pluralFormatter.format(objects, locale);
   }
 
   String string(String key, Locale locale) {
@@ -79,17 +95,4 @@ class _StringStorage {
       return null;
     }
   }
-}
-
-class StringsLocalizationDelegate extends LocalizationsDelegate<Strings> {
-  @override
-  bool isSupported(Locale locale) => true;
-
-  @override
-  Future<Strings> load(Locale locale) {
-    return Strings(locale).load();
-  }
-
-  @override
-  bool shouldReload(LocalizationsDelegate<Strings> old) => false;
 }

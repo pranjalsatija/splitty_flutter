@@ -32,6 +32,9 @@
   "invalidPrice": {
     "en": "Please enter a valid price for this item."
   },
+  "itemFormattedDescription": {
+    "en": "%s · %s"
+  },
   "itemInfo": {
     "en": "Item Info"
   },
@@ -80,6 +83,9 @@
   "selectAll": {
     "en": "Select All"
   },
+  "splitFormattedDisplay": {
+    "en": "%s - %s"
+  },
   "splitName": {
     "en": "Split Name"
   },
@@ -88,5 +94,8 @@
   },
   "viewItem": {
     "en": "View Item"
+  },
+  "viewSplit": {
+    "en": "View Split"
   }
 }

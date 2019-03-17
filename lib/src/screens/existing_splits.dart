@@ -13,6 +13,7 @@ class ExistingSplitsScreen extends StatelessWidget implements BottomNavigationBa
     Navigator.of(context).push<void>(
       MaterialPageRoute(
         builder: (context) => SplitDetailScreen(
+          mode: SplitDetailScreenMode.readOnly,
           pushHandler: () {},
           splitStream: SingleValueStream(split).backingStream,
         ),

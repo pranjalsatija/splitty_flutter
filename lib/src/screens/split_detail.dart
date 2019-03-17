@@ -3,11 +3,17 @@ import 'package:splitty/splitty.dart';
 
 import 'main_tab.dart';
 
+enum SplitDetailScreenMode {
+  readWrite, readOnly
+}
+
 class SplitDetailScreen extends StatelessWidget implements BottomNavigationBarScreen {
+  final SplitDetailScreenMode mode;
   final VoidCallback pushHandler;
   final Stream<Split> splitStream;
 
   SplitDetailScreen({
+    @required this.mode,
     @required this.pushHandler,
     @required this.splitStream,
   });
@@ -102,35 +108,36 @@ class SplitDetailScreen extends StatelessWidget implements BottomNavigationBarSc
     Scaffold.of(context).showSnackBar(snackbar);
   }
 
-  Widget _buildFooter(BuildContext context, Split split) {
-    final widgets = split.totalsPerPerson().map<Person, Widget>((person, amount) {
-      final formattedAmount = ItemPriceInputFormatter.format(amount, includeCurrencySymbol: true);
-      final formattedDisplay = '${person.name} - $formattedAmount';
-      final textWidget = Text(
-        formattedDisplay,
-        style: TextStyle(
-          fontWeight: FontWeight.bold
-        ),
+  Widget _buildBody(BuildContext context, Split split) {
+    String title;
+
+    switch (mode) {
+      case SplitDetailScreenMode.readWrite:
+        title = Strings.of(context).newSplit;
+        break;
+      case SplitDetailScreenMode.readOnly:
+        title = split.name;
+        break;
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: _buildSplitList(context, split),
+      floatingActionButton: _buildFloatingActionButton(context),
+    );
+  }
+
+  Widget _buildFloatingActionButton(BuildContext context) {
+    if (mode == SplitDetailScreenMode.readWrite) {
+      return FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => _addItem(context, null),
       );
+    }
 
-      return MapEntry(person, textWidget);
-    }).values.toList();
-
-    widgets.add(
-      RaisedButton(
-        child: Text(Strings.of(context).saveSplit),
-        color: Theme.of(context).primaryColor,
-        onPressed: () => _saveList(context),
-        textColor: Colors.white,
-      ),
-    );
-
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: widgets,
-      ),
-    );
+    return null;
   }
 
   Widget _buildSplitList(BuildContext context, Split split) {
@@ -140,62 +147,32 @@ class SplitDetailScreen extends StatelessWidget implements BottomNavigationBarSc
         message: Strings.of(context).addItemMessage,
         onPressed: () => _addItem(context, null),
       );
+    } else {
+      return SplitList(
+        deleteHandler: (item) => _deleteItem(context, item),
+        saveHandler: () => _saveList(context),
+        shouldAllowEditing: mode == SplitDetailScreenMode.readWrite,
+        split: split,
+      );
     }
-
-    return ListView.separated(
-      itemCount: split.items.length + 1,
-      itemBuilder: (context, index) {
-        if (index >= split.items.length) {
-          return _buildFooter(context, split);
-        }
-
-        final item = split.items[index];
-
-        return Dismissible(
-          child: ListTile(
-            title: Text(item.name),
-            subtitle: Text(item.formattedDescription),
-            onTap: () {
-              Navigator.of(context).push<void>(
-                MaterialPageRoute(
-                  builder: (context) => ItemScreen(item: item, mode: ItemScreenMode.editItem),
-                ),
-              );
-            },
-          ),
-          key: Key(item.name),
-          onDismissed: (_) => _deleteItem(context, item),
-        );
-      },
-      separatorBuilder: (context, index) => Divider(height: 1),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(Strings.of(context).newSplit),
-      ),
-      body: StreamBuilder<Split>(
-        stream: splitStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            showErrorSnackbar(context, snapshot.error);
-          }
+    return StreamBuilder<Split>(
+      stream: splitStream,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          showErrorSnackbar(context, snapshot.error);
+        }
 
-          if (snapshot.hasData) {
-            return _buildSplitList(context, snapshot.data);
-          } else {
-            pushHandler();
-            return ExpandedLoadingIndicator();
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => _addItem(context, null),
-      ),
+        if (snapshot.hasData) {
+          return _buildBody(context, snapshot.data);
+        } else {
+          pushHandler();
+          return ExpandedLoadingIndicator();
+        }
+      },
     );
   }
 }
