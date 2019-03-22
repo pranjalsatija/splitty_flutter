@@ -116,6 +116,7 @@ class PeopleScreen extends StatelessWidget implements BottomNavigationBarScreen 
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.person_add),
         onPressed: () => _addPerson(context, null),
+        tooltip: Strings.of(context).addPersonPrompt,
       ),
     );
   }

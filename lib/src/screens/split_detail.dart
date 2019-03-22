@@ -134,6 +134,7 @@ class SplitDetailScreen extends StatelessWidget implements BottomNavigationBarSc
       return FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () => _addItem(context, null),
+        tooltip: Strings.of(context).addItemPrompt,
       );
     }
 
